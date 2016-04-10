@@ -1,0 +1,40 @@
+---
+layout: post
+title: Source code review with AutoBugle
+date: 2008-02-05 22:23:40.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- bugle
+- google
+- Security
+- source code
+- tool
+meta:
+  _edit_last: '2833780'
+---
+<p><strong><br />
+Note: Auto Bugle is a discontinued project<br />
+</strong><br />
+<em> </em></p>
+<p><em> </em></p>
+<blockquote><p>This article is kept just for <strong>reference</strong>. I will try to package the source code and give it as a download at some point.</p></blockquote>
+<hr />Some time ago I start creating a list of google queries (Bugle) people could use to hunt bugs in source code available in the web. The project started before Google Code Search, so the only way to point to source code was using the Filetype and <span style="text-decoration:underline;">? * .</span> operators which worked pretty well. After a couple  of months Google announced the Code Search service and the accompanied API which made things much more interesting. Using the new Google service people  can supply full regular expression when searching and pinpoint to Bugs a bit more accurately.</p>
+<p>Anyway, to cut a long story short, utilising <a title="jQuery" href="http://jquery.com/">jQuery</a>, <a title="Google Code Search API" href="http://code.google.com/apis/codesearch/">Google Code Search API</a> and <a title="Bugle" href="http://www.cipher.org.uk/bugle/">Bugle</a>, I created an <span style="text-decoration:line-through;"><span style="color:#0000ff;">automated version</span></span> of the Bugle project which  looks as close as possible to a desktop based source code review tool.</p>
+<p><img class="alignnone size-full wp-image-370" title="bugleautosnapshot1" src="{{ site.baseurl }}/assets/bugleautosnapshot1.png" alt="bugleautosnapshot1" width="433" height="394" /><br />
+To demonstrate Bugle Automated I will be looking for bugs in Samba. The first step is to add the package you want to inspect in the Scan field, as you can see below there is Auto Complete functionality available suggesting possible packages while you type a name.</p>
+<p><img class="alignnone size-full wp-image-371" title="bugleautostep1" src="{{ site.baseurl }}/assets/bugleautostep1.png" alt="bugleautostep1" width="598" height="237" /></p>
+<p>After choosing a package, press scan an Bugle will do the rest.</p>
+<p>The first screen you see is a bit empty , both the Main Panel and the Stats Panel will load as soon as you choose a vulnerability category from the left side. Bugle displays the number of issues of each category, so you can immediately get an general idea on where you might find a bug.</p>
+<p><img class="alignnone size-medium wp-image-372" title="bugleautostep2" src="{{ site.baseurl }}/assets/bugleautostep2.png?w=233" alt="bugleautostep2" width="233" height="300" /></p>
+<p>As soon as you choose a category a sub menu will be revealed, presenting all the different signatures in that category. At the same time the statistics Panel will load and all the relevant graphs for the project/categories and categories/signatures will be displayed.</p>
+<p><img class="alignnone size-medium wp-image-373" title="bugleautostep6" src="{{ site.baseurl }}/assets/bugleautostep6.png?w=300" alt="bugleautostep6" width="300" height="145" /></p>
+<p>Next we choose the Buffer Overflows category, with 205 hits and then the Generic BoF signature (with 50 hits). The Main Panel loads and then we can see each individual line with a possible bug. We scroll down until we find something that could be a vulnerability and click on that line.<br />
+<img class="alignnone size-medium wp-image-374" title="bugleautostep4" src="{{ site.baseurl }}/assets/bugleautostep4.png?w=300" alt="bugleautostep4" width="300" height="136" /><br />
+We click the Line 117 of samba-1.9.15p8.mvs/source/sockspy.c and we inspect the code in the Code Snippet dialog. Then we scroll down until we find the  line with the yellow highlighted text<br />
+<img class="alignnone size-medium wp-image-375" title="bugleautostep5" src="{{ site.baseurl }}/assets/bugleautostep5.png?w=300" alt="bugleautostep5" width="300" height="284" /></p>
+<p>We can see that   strcpy(DestHost,argv[1]);  is copying the arv[1] into the DestHost buffer which has 256 chars size. Now we can guess that if we pass in the command line DestHost larger than 256 chars we can create a buffer overflow condition. (Note that this bug in sockspy.c is in a very very very old version of Samba)</p>
+<p>That's <span style="color:#0000ff;"><span style="text-decoration:line-through;">Bugle Auto Scanner</span></span>, hopefully this will assist in discovering and fixing bugs out there.</p>

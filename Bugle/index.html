@@ -1,0 +1,616 @@
+---
+layout: page
+title: Bugle
+date: 2009-07-31 07:41:45.000000000 +01:00
+type: page
+published: true
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2833780'
+---
+<h4><img style="border:0 initial initial;" title="bugle" src="{{ site.baseurl }}/assets/bugle.jpg" alt="bugle" width="107" height="38" />Google Source Code Bug Finder</h4>
+<p><strong><span style="color:blue;">B</span><span style="color:gray;">u</span><span style="color:yellow;">g</span><span style="color:blue;">l</span><span style="color:green;">e</span></strong><br />
+is a collection of search queries which can help to identify software security bugs in source code available on the web.  The list at the moment is rather small (you get the idea though), hopefully people will start sending more queries. Source code review is not a straight forward operation , using the list you will get pinpoints and not definite results.</p>
+<p>To <strong>submit </strong>search queries click the button below or sent an email to BUGLE [AT] cipher.org.uk with the search term, small description and programming language. Also drop an email if you find bugs using bugle.</p>
+<p>Google Alert = <img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" />, Description = <img src="{{ site.baseurl }}/assets/description.gif" alt="" />, Possible bug = <img src="{{ site.baseurl }}/assets/bug-bugle.gif" alt="" />, CodeSearch = <img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" />, SimpleSearch = <img src="{{ site.baseurl }}/assets/search.gif" alt="" /></p>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Buffer Overflows (15) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=strcpy%5C%28%28buffer%7Cbuf%29%2Cstr%5C%29  lang:C" target="_blank">Simple Strcpy RegEx</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=strcpy%5C%28.%2A%2Cargv%5C%5B.%2A%5C%5D%5C%29%3B  lang:C" target="_blank">Generic BoF</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=strecpy%5C%28.%2A%5C%29  lang:C" target="_blank">strecpy</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="The output argument must point to a space big enough to accommodate the result, otherwise a BOF is here1"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=realpath  lang:C" target="_blank">realpath</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="It could potentially lead to a buffer overflow if there is not any appropriate check in place."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=getwd+-PATH_MAX+-MAX_PATH  lang:C" target="_blank">getwd</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="The getwd() function determines an absolute path it may create overflow conditions"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=umask%28.%2A%29+-077.%2A+-066.%2A+777  lang:C" target="_blank">Umask - permssions</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="Non restrictive umask"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em> </em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22strcpy%28buffer%7Cbuf%2Cstr%29%22+ filetype:C" target="_blank">Another Simple Strcpy</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22strcpy%28buffer%7Cbuf%2Cstr%29%22+ filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22strncpy%28buffer%7Cbuf%2Cstr%2Clen%29%22 filetype:C" target="_blank">Strncpy - Buffer Length Miscalculation</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22strncpy%28buffer%7Cbuf%2Cstr%2Clen%29%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="Useful for locating strncpy bugs similar to the one in SambaTrans2Open vulnerability, where copy size is not calculated based on size of destination buffer but by length of source string."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Varun Uppal</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22strcpy%28buffer%7Cbuf%2C+argv%5B%3F%5D%29%3B%22 filetype:C" target="_blank">argv Strcpy</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22strcpy%28buffer%7Cbuf%2C+argv%5B%3F%5D%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22strcpy%28%2A%2C+argv%5B%3F%5D%29%3B%22 filetype:C" target="_blank">Generic Strcpy</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22strcpy%28%2A%2C+argv%5B%3F%5D%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="Daniel Crompton pointed out that when using  * you get more results than before."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Daniel Crompton</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22char+buffer%5B%3F%5D%3B%22++%22strcpy%28buffer%2C+str%29%3B%22++filetype%3Ac filetype:C" target="_blank">Simple Strcpy</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22char+buffer%5B%3F%5D%3B%22++%22strcpy%28buffer%2C+str%29%3B%22++filetype%3Ac filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22char+buffer%5B%3F%5D%3B%22+%22sprintf%28%3F%2C+%93%25s%94%2C+%3F%29%3B%22+ filetype:C" target="_blank">Generic Sprintf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22char+buffer%5B%3F%5D%3B%22+%22sprintf%28%3F%2C+%93%25s%94%2C+%3F%29%3B%22+ filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22char+buffer%7Cbuf%5B%3F%5D%3B%22+%22gets%28buffer%7Cbuf%29%3B%22 filetype:C" target="_blank">Generic gets</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22char+buffer%7Cbuf%5B%3F%5D%3B%22+%22gets%28buffer%7Cbuf%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22strcat%28char+%2A%3F%2C+const+char+%2A%3F%29%22++%22buffer%5B%3F%5D%7Cbuf%5B%3F%5D%22 filetype:C" target="_blank">Generic Strcat</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22strcat%28char+%2A%3F%2C+const+char+%2A%3F%29%22++%22buffer%5B%3F%5D%7Cbuf%5B%3F%5D%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22char+buffer%7Cbuf%5B%3F%5D%3B%22+%22int+%3F%3B%22++%22%3F+%3D+fscanf%28stdin%2C+%22%25s%22%2C+buffer%7Cbuf%29%3B%22 filetype:C" target="_blank">Simple fscanf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22char+buffer%7Cbuf%5B%3F%5D%3B%22+%22int+%3F%3B%22++%22%3F+%3D+fscanf%28stdin%2C+%22%25s%22%2C+buffer%7Cbuf%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Integer Overflows (2) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=atoi%7Catol+if%5C%28length  lang:C" target="_blank">atoi</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="missing checks could lead to integer overflows"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=if%5C%28len%7Clength%3Esize%5C%29+sizeof%5C%28buffer%7Cbuf%5C%29  lang:C" target="_blank">Generic Integer overflow If Statement</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Format String (9) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=printf%5C%28argv%5C%5B%5Cw%5C%5D%5C%29%3B  lang:C" target="_blank">Printf ARGV</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Christer berg</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=syslog%5C%28%28%5Cw%2B%2C%5Cw%2B%29%5C%29%3B  lang:C" target="_blank">Unsecure syslog()</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Nicolas Ruff</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5E%5B%5C+%5Ct%5D%2Aprintf%5C%28getenv  lang:C" target="_blank">getenv</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by anonymous</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22vsprintf%28str%29%3B%22 filetype:C" target="_blank">Simple vsprintf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22vsprintf%28str%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22vfprintf%28str%29%3B%22 filetype:C" target="_blank">Simple vfprintf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22vfprintf%28str%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22fsnprintf%28str%29%3B%22 filetype:C" target="_blank">Simple snprintf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22fsnprintf%28str%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22fprintf%28str%29%3B%22 filetype:C" target="_blank">Simple fprintf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22fprintf%28str%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22printf%28str%29%3B%22 filetype:C" target="_blank">Simple printf</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22printf%28str%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22printf%28argv%5B%3F%5D%29%3B%22 filetype:C" target="_blank">Printf ARGV</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22printf%28argv%5B%3F%5D%29%3B%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Christer Oberg</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Command injection (6) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%28system%7Cpopen%7Cshell_exec%7Cexec%29%5Cs%2A%5C%28%5C%24_%28GET%7CPOST%7CCOOKIE%7CREQUEST%7CSESSION%29.%2A%5C%29  lang:PHP" target="_blank">Execute command</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="Unsage command execution"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%28eval%29%5C%28%5C%24_%28GET%7CPOST%7CREQUEST%7CCOOKIE%29  lang:PHP" target="_blank">Eval using</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="Unsage command execution"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=OpenTextFile%5Cs%2A%5C%28%5Cs%2ARequest%5C..%2A" target="_blank">Generic injection</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td><acronym title="open a file handle with user-supplied data"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Dmitry Chan</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=preg_replace%5C%28.%2A%3F%2Fe.%2A%3F%28COOKIE%7CPOST%7CGET%7CREQUEST%7CSERVER%29.%2A%3F%5C%29  lang:PHP" target="_blank">Unfiltered preg_replace parameters</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="it searches for code where preg_replace with param /e exists. Using preg_replace( ... /e ... ) with unfiltered parameters can lead to command injection."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Ams</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22system%28argv%5B%3F%5D%29%3B%22+ filetype:C" target="_blank">system() and argv</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22system%28argv%5B%3F%5D%29%3B%22+ filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22popen%28+argv%5B%3F%5D%2C+%22r%7Cw%22%29%3B%22+ filetype:C" target="_blank">popen() and argv</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22popen%28+argv%5B%3F%5D%2C+%22r%7Cw%22%29%3B%22+ filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Control Flow (1) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22switch%28%3F%29%22+%2Bcase+-break+-default+ filetype:C" target="_blank">Switch no break/no default </a></td>
+<td><a href="http://www.google.com/alerts/?q=%22switch%28%3F%29%22+%2Bcase+-break+-default+ filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> SQL Injection (9) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=request.form%7Crequest.querystring+ADODB.Connection  lang:ASP" target="_blank">SQL Injection [request]</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="ASP SQL Injection for CodeSearch"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Sergey V. Gordeychik</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=executequery+request.getparameter+  lang:JAVA" target="_blank">SQL Injection [GetParameter]</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>JAVA</strong></td>
+<td><acronym title="Detects  SQL injection vulnerabilties. Many false positives but few vulnerable files."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Stephen de Vries</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=mysql_query%5C%28.%2A%5C%24_%28GET%7CPOST%7CCOOKIE%7CSESSION%7CREQUEST%29  lang:PHP" target="_blank">Mysql_query</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="Possible SQL Injection"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=WHERE+.%3D%5C%24_%28GET%7CPOST%7CSESSION%7CCOOKIE%7CREQUEST%29  lang:PHP" target="_blank">Sql Injection</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=Select%5Cs%2A%5Ba-zA-Z_0-9%2C%5C%2A%5Cs%5D%2B%5Cs%2AFrom%5Cs%2A%5Ba-zA-Z_0-9%2C%5C%2A%5Cs%5D%2B%5Cs%2A.%2ACookie.%2A%5C%28%5Cs%2A%5C%22.%2A%5C%22%5Cs%2A%5C%29" target="_blank">Generic sql injection</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td><acronym title="generic cookie sql injection"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Dmitry Chan</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=executequery+request.getparameter filetype:JAVA" target="_blank">SQL Injection</a></td>
+<td><a href="http://www.google.com/alerts/?q=executequery+request.getparameter filetype:JAVA&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>JAVA</strong></td>
+<td><acronym title="Detects  SQL injection vulnerabilties. Many false positives but few vulnerable files."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Stephen de Vries</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%28%22request.form%22+OR+%22request.querystring%22%29+%22ADODB.Connection%22 filetype:ASP" target="_blank">SQL Injection ASP</a></td>
+<td><a href="http://www.google.com/alerts/?q=%28%22request.form%22+OR+%22request.querystring%22%29+%22ADODB.Connection%22 filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="ASP SQL Injection"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Sergey V. Gordeychik</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=lang%3Aphp+%22WHERE+username%3D%27%24_%22 filetype:PHP" target="_blank">Sql Injection WHERE clause</a></td>
+<td><a href="http://www.google.com/alerts/?q=lang%3Aphp+%22WHERE+username%3D%27%24_%22 filetype:PHP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=lang%3Aphp+mysql_query%5C%28.%2A%5C%24_%28GET%7CPOST%29.%2A%5C%29 filetype:PHP" target="_blank">SQL injection mysql_query()</a></td>
+<td><a href="http://www.google.com/alerts/?q=lang%3Aphp+mysql_query%5C%28.%2A%5C%24_%28GET%7CPOST%29.%2A%5C%29 filetype:PHP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Cross Site Scripting (13) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%28echo%7Cprint%29.%5C%24_SERVER%5C%5B%27PHP_SELF%27%5D  lang:PHP" target="_blank">PHP_SELF xss</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="Use exploit like http://server/path/script.php/&lt;script&gt;alert()&lt;/script&gt;"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=lang%3Aphp+echo.%2A%5C%24_%28GET%7CPOST%29  lang:PHP" target="_blank">PHP XSS (GET|POST)</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5Cs%2Bprint.%2A%5C%24cgi-%3Eparam%5Cs%2A%5C%28%5B%5C%22%27%5D  lang:PERL" target="_blank">generic xss</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PERL</strong></td>
+<td><acronym title="perl xss"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Dmitry Chan</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=a+href%5Cs%2A%3D%5Cs%2A%3C%25%3D%5Cs%2A%5BrR%5Dequest%5C.%5B%5E%25%5D%2A%25%3E  lang:ASP" target="_blank">ASP href injection</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="xss"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Dmitry Chan</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=out%5C.println%5Cs%2A%5C%28%5Cs%2Arequest%5C.getparameter%5Cs%2A%5C%28%5Cs%2A%5C%22" target="_blank">Generic xss</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td><acronym title="generic xss"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Dmitry Chan</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22Response.Redirect+Request.QueryString%22+ filetype:ASP" target="_blank">ASP XSS (Response Splitting )</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22Response.Redirect+Request.QueryString%22+ filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="ASP Response Splitting in asp , it can be used for XSS and other things , at the moment will be an entry for the XSS category."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Sergey V. Gordeychik</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=Response.Write+Request.ServerVariables+user_agent filetype:ASP" target="_blank">ASP XSS (USER_AGENT)</a></td>
+<td><a href="http://www.google.com/alerts/?q=Response.Write+Request.ServerVariables+user_agent filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="ASP XSS via USER_AGENT"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Sergey V. Gordeychik</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=Response.Write+Request.ServerVariables+HTTP_REFERER filetype:ASP" target="_blank">ASP XSS (REFERER)</a></td>
+<td><a href="http://www.google.com/alerts/?q=Response.Write+Request.ServerVariables+HTTP_REFERER filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="ASP XSS via HTTP_REFERER"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Sergey V. Gordeychik</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22echo+%24_COOKIE%22 filetype:PHP" target="_blank">PHP XSS (COOKIE)</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22echo+%24_COOKIE%22 filetype:PHP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="if you either set the specified GET, POST or COOKIE variable when making a request, the data will be spat out back to the client."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Neftaly Hernandez</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22echo+%24_POST%22 filetype:PHP" target="_blank">PHP XSS (POST)</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22echo+%24_POST%22 filetype:PHP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="if you either set the specified GET, POST or COOKIE variable when making a request, the data will be spat out back to the client."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Neftaly Hernandez</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22echo+%24_GET%22+ filetype:PHP" target="_blank">PHP XSS (GET)</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22echo+%24_GET%22+ filetype:PHP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="if you either set the specified GET, POST or COOKIE variable when making a request, the data will be spat out back to the client."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Neftaly Hernandez</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22response.write+request.form%22 filetype:ASP" target="_blank">ASP XSS</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22response.write+request.form%22 filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td><acronym title="Detects Possible XSS in ASP Files"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%3C%25%3D.%2AgetParameter filetype:JAVA" target="_blank">XSS in Java Applications</a></td>
+<td><a href="http://www.google.com/alerts/?q=%3C%25%3D.%2AgetParameter filetype:JAVA&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>JAVA</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Bad Practices (11) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%28include%7Crequire%29%28_once%29%3F%5C%28%5C%24_%28GET%7CPOST%7CREQUEST%7CSESSION%7CCOOKIE%29  lang:PHP" target="_blank">PHP injection</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="PHP file injection"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=header%5Cs%5C%28%22Location%3A.%5C%24_%28GET%7CPOST%7CSESSION%7CCOOKIE%7CREQUEST%29.%5C%29  lang:PHP" target="_blank">HTTP Request smuggling</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td><acronym title="HTTP Request smuggling"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by gemaglabin</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=file%3AphpMyAdmin%2Fconfig.inc.php+password+lang%3Aphp  lang:PHP" target="_blank">phpMyAdmin/config.inc.php password</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=dbuser+dbpw+file%3Aconfig.php  lang:PHP" target="_blank">Default passwords(config.php)</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5Einclude%5C%28%5C%24%28.%2A%29%5C%29%3B%24  lang:PHP" target="_blank">PHP RFI vulns</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>PHP</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5C%5Bsizeof%5C%28.%2A%5C%29%5C%5D%5C+%2A%3D%5C+%2A%27%3F%5C%5C%3F0%27%3F%3B%24  lang:C" target="_blank">Off by one</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by anonymous</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22CreateFileMapping%28%3F%2CNULL%2C%3F%2C%3F%2C%3F%2C%3F%29+%22 filetype:C" target="_blank">CreateFileMapping NULL Security</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22CreateFileMapping%28%3F%2CNULL%2C%3F%2C%3F%2C%3F%2C%3F%29+%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="People create memory mapped files under Windows with NULL security."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22CreateFileMapping%28%3F%2CNULL%2C%3F%2C%3F%2C%3F%2C%3F%29%22 filetype:C++" target="_blank">CreateFileMapping NULL Security </a></td>
+<td><a href="http://www.google.com/alerts/?q=%22CreateFileMapping%28%3F%2CNULL%2C%3F%2C%3F%2C%3F%2C%3F%29%22 filetype:C++&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C++</strong></td>
+<td><acronym title="People create memory mapped files under Windows with NULL security"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22unsafe%22 filetype:C#" target="_blank">Unsafe Keyword</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22unsafe%22 filetype:C#&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C#</strong></td>
+<td><acronym title="find C# code which uses the \'unsafe\' keyword"><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22option+explicit+off%22 filetype:ASP" target="_blank">Option Explicit Off</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22option+explicit+off%22 filetype:ASP&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ASP</strong></td>
+<td></td>
+<td><em>by Philipp Lenssen</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22default+password%22+file%3AREADME.TXT filetype:TXT" target="_blank">Default passwords(README.TXT)</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22default+password%22+file%3AREADME.TXT filetype:TXT&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>TXT</strong></td>
+<td></td>
+<td><em>by ettee</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Suspicious comments (6) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=backdoor  lang:C" target="_blank">Backdoor</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=bug%7Chack%7Cfixme%7CXXX" target="_blank">bug or hack etc</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td></td>
+<td><em>by Steve Beattie</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=XXX%3A+lang%3AC  lang:C" target="_blank">Known Bugs</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td><acronym title="Find XXX comments that often show TBD or known bugs."><img src="{{ site.baseurl }}/assets/description.gif" alt="" /></acronym></td>
+<td><em>by 42Bastian</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=fixme%3A" target="_blank">Fixme</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22%2F%2A+Dirty+Hack%22 filetype:C" target="_blank">Dirty Hack</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22%2F%2A+Dirty+Hack%22 filetype:C&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/search.gif" alt="" /><a href="http://www.google.com/search?hl=en&amp;q=%22%2F%2A+Dirty+Hack%22 filetype:C++" target="_blank">Dirty Hack</a></td>
+<td><a href="http://www.google.com/alerts/?q=%22%2F%2A+Dirty+Hack%22 filetype:C++&amp;t=2"><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C++</strong></td>
+<td></td>
+<td><em>by Ollie Whitehouse</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Race Condition (2) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5CW%28tmpnam%7Ctmpname%29%5C%28+  lang:C" target="_blank">Temporary file race condition</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Diomidis Spinellis</em></td>
+</tr>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=%5CWaccess%5C%28  lang:C" target="_blank">Access vulnerable to race condition</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>C</strong></td>
+<td></td>
+<td><em>by Diomidis Spinellis</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong><img src="{{ site.baseurl }}/assets/category.gif" alt="" /> Logic-bombs, Trapdoors, Trojan Horses (1) </strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td><img src="{{ site.baseurl }}/assets/codesearch.gif" alt="" /><a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=if+%28.time%3D%3D.%2A00%3A00.%2A%29" target="_blank">Time  (00:00)</a></td>
+<td><a><img src="{{ site.baseurl }}/assets/alert1.jpg" border="0" alt="" /></a></td>
+<td>Lang:<strong>ALL</strong></td>
+<td></td>
+<td><em></em></td>
+</tr>
+</tbody>
+</table>
+<p>The last section is for searching code and not searching comments, if you have suspicous comments that might indicate malicious behaviour submit them in the "Suspicious comments" category.</p>
+<p><strong>Total Number of Queries :75</strong></p>
+<h2>Query Syntax</h2>
+<p><strong>Normal google engine</strong><br />
+To specify language you need to use the "filetype" tag provided by google. For example to search within C files<br />
+you use filetype:c for perl filetype:pl and so on. After that you specify what you want to look for , for example<br />
+to look for a potential buffer overflow resulted by strcpy you can use as query : "strcpy(*,argv[?])" filetype:c .</p>
+<p><strong>Google Code Search</strong><br />
+Google code search can do much more , for example regular expressions.<br />
+<a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=strcpy%5C%28.*%2Cargv%5C%5B.*%5C%5D%5C%29%3B+lang%3Ac&amp;btnG=Search">strcpy\(.*,argv\[.*\]\); lang:c</a> to do the same thing as above.<br />
+Have a look at the <a href="http://regexlib.com/CheatSheet.aspx">RegExp Cheat Sheet</a> and make your own recipes.</p>
+<p><em>"The rest is up to your imagination"</em></p>
+<p><strong>Alerts</strong><br />
+If you want to be more active you can click the alert (<img src="{{ site.baseurl }}/assets/alert1.jpg" alt="" />) icon next to a query and add a <a href="http://www.google.com/alerts?t=3&amp;hl=en_GB"> Google Alert</a>. This way you will get new vulnerable source code for each query as soon as it becomes available.</p>
+<p><img src="{{ site.baseurl }}/assets/vim.jpg" alt="" /><strong>Vim plugin</strong><br />
+There is an experimental vim plugin/syntax at <a href="http://www.vim.org/scripts/script.php?script_id=1734"><br />
+http://www.vim.org/scripts/script.php?script_id=1734</a> with some of of Bugle's signatures.</p>
+<p>News ref :<a href="http://www.eweek.com/c/a/Security/Bugle-Goes-Googling-for-Source-Code-Flaws/">eWeek</a>,<a href="http://www.theregister.co.uk/2006/07/28/bugle/">The Register</a></p>
+<p><!-- #post-ID --></p>

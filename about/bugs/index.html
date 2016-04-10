@@ -1,0 +1,67 @@
+---
+layout: page
+title: Bugs
+date: 2009-07-31 08:45:28.000000000 +01:00
+type: page
+published: true
+status: publish
+categories: []
+tags: []
+meta:
+  _edit_last: '2833780'
+---
+<p><img class="alignnone size-full wp-image-402" title="1249121586_kappfinder" src="{{ site.baseurl }}/assets/1249121586_kappfinder.png" alt="1249121586_kappfinder" width="32" height="32" /></p>
+<div>A list of some public bugs discovered during <strong>testing</strong>/<strong>fuzzing</strong>/<strong>source</strong> <strong>reviewing</strong>/<span style="color:#000000;"><strong>using</strong></span></div>
+<hr />
+<ul>
+<li>libavcodec insufficient boundary check <a href="http://www.ocert.org/advisories/ocert-2011-002.html">oCert report (2011-002)</a> / <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3362">CVE-2011-3362</a></li>
+<li>Ruby Integer to Heap Overflow <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-4124">CVE-2009-4124</a></li>
+<li>Multiple PHP Issues <a href="http://www.ocert.org/advisories/ocert-2009-017.html">oCert report (2009-017)</a></li>
+<li>Android Dalvik API Issues <a href="http://www.ocert.org/advisories/ocert-2009-014.html">oCert report (2009-014)</a> / <a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2009-3698">CVE-2009-3698</a></li>
+<li>VMWare ACE Privilege Escallation <a href="http://lists.vmware.com/pipermail/security-announce/2009/000054.html">VMSA-2009-0005</a> / <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-0908">CVE-2009-0908</a></li>
+<li>Asterisk JPEG Codec Integer Overflow - <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-1827">CVE-2006-1827</a></li>
+<li>IE Remote Memory Access Violation - <a href="http://securityfocus.com/bid/10299">BID 10299</a></li>
+<li>Microsoft System Information buffer overflow - <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2004-1649">CVE-2004-1649</a></li>
+<li>Certificate Spoofing Mozilla FireFox - <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2004-0763">CVE-2004-0763</a></li>
+<li>Certificate Stealing (IE) - <a href="http://securityfocus.com/bid/10248/">BID 10248</a></li>
+<li>Kerio Personal Firewall remote off <a href="http://www.securityfocus.com/bid/10075">BID 10075</a></li>
+</ul>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">Some bugs found with using bugle</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">fssdispadmin buffer overflow</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">There is a buffer overflow vulnerability in fssdispadmin at line 70</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">CODE : (void) strcpy(cmdpath, argv[0]);</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">BUG : if argv[0] larger than 256 chars a BOF condidition will occure</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">*This bug has been reported to opensolaris team.</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">Nireport Buffer overflow (Mac OS X 10.4.7 (Darwin 8.7)</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">There is a buffer overflow vulnerability in nineport at line 178</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">CODE : char myname[128]; …… if (slash == NULL) strcpy(myname, argv[0]);</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">BUG : if argv[0] larger than 128 chars a BOF condidition will occure</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">/usr/sbin/nireport runs as the user executing it and is not granted any additional privileges by default.</div>
+<div id="_mcePaste" style="position:absolute;left:-10000px;top:162px;width:1px;height:1px;">*This bug has been reported to Apple's security team.</div>
+<hr />
+<p>Some <strong>simple bugs found using</strong> <a href="http://www.cipher.org.uk/bugle/">bugle</a> and <a href="/2008/02/05/source-code-review-with-bugle/">autobugle</a></p>
+<ul>
+<ul>
+<li><span style="color:#339966;">fssdispadmin buffer overflow</span></li>
+</ul>
+</ul>
+<p>There is a buffer overflow vulnerability in fssdispadmin at line 70<br />
+CODE : (void) strcpy(cmdpath, argv[0]);<br />
+BUG : if <span style="text-decoration:underline;">argv[0]</span> larger than 256 chars a BOF condidition will occur<br />
+*This bug has been reported to opensolaris team.</p>
+<ul>
+<ul>
+<li><span style="color:#339966;">Nireport Buffer overflow (Mac OS X 10.4.7 (Darwin 8.7)</span></li>
+</ul>
+</ul>
+<p>There is a buffer overflow vulnerability in nineport at line 178<br />
+CODE : char myname[128]; ..... if (slash == NULL) strcpy(myname, argv[0]);<br />
+BUG : if <span style="text-decoration:underline;">argv[0]</span> larger than 128 chars a BOF condidition will occure /usr/sbin/nireport runs as the user executing it and is not granted any additional privileges by default.<br />
+*This bug has been reported to Apple's security team.</p>
+<hr />
+<p>Some<strong> exhaustion buggies</strong> (most likely not exploitable) :</p>
+<p>Both of these are recursion bugs and are triggered by the character '?' and '#'</p>
+<ul>
+<li>OBJECT Internet Explorer Remote Crash - <a href="http://securityfocus.com/bid/10167">BID 10167</a></li>
+<li>IFRAME Internet Explorer crash - <a href="http://securityfocus.com/bid/10073">BID 10073</a></li>
+</ul>

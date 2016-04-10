@@ -1,0 +1,39 @@
+---
+layout: post
+title: The art of Steganography
+date: 2003-02-10 19:42:30.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- information hiding
+- Security
+- steganography
+meta:
+  _edit_last: '2833780'
+---
+<p>Steganography comes from the combination of greek words Stagano (sealed) and graphy (writting) and it is self  explanatory.   The most famouse ancient example of this techinque is the following :</p>
+<p><em>"When the Greek tyrant Histiaeus was held as a virtual  prisoner of king Darius in Susa in the 5th century BCE,  he had to send a secret message to his son-in-law Aristagoras  to the Anatolian city of Miletus. Histiaeus shaved the head  of a slave and tattooed a message on his scalp. When the  slave's hair had grown long enough he was dispatched to  Miletus. That's how Herodotus describes one of the first  cases of using steganography in the ancient world, the  art of covered writing."</em></p>
+<p>You have to remember that Steganography created not to  replace Cryptography but to co-operate with it. Cryptograpghy can scramble a message and create a Pseudo-random sequence of characters or bytes, but steganography is used to hide the existance of a message into another message or host object. A combination of both can create a not vissible secure communication  channel.<br />
+<img class="alignnone size-full wp-image-283" title="stegoimage1" src="{{ site.baseurl }}/assets/stegoimage1.jpg" alt="stegoimage1" width="292" height="115" /><br />
+Information technology world and the internet can really help a communication  via Steganography. Many diferrent file formats , protocols and million of texts can be used to hide information between two or more parties using a public communication channel, email e.t.c. In one of Fravia's[1] Texts related to steganography he states that it is better to store/hide important data into public places instead of your personal PC because it is more likely that  public places are better maintained and second you can access it from anywhere in the world. In order to have a better understanding of how you can use this kind of technology I'll  give a real life example.</p>
+<p>Let say that you have many passwords and you want to store them somewhere secure and not visible , so your password list wont even be a subject of attack.</p>
+<p>Take a picture using your digital camera (I'll tell you why use a picture of yours and not  a public one later). After that download one of many free/public programs on steganography (e.g. JPHide) and store your informations inside the host image. Now put this image somewhere on the web (your website , your online photo album , even into an ebay advert). After you've  done that you can access your password list wherever you are without anyone knows its existance.</p>
+<p>Previously I stated that you need to use a brand new picture, this is because you can avoid Hash  attacks. If you use a someone's else picture or a famous picture (like a Dali painting) some can take your picture and create a Hash, then take the original picture and create another hash , if the two hases don't match it means that yours is changed somehow so ppl can understand that there is a hidden informaiton isnide.</p>
+<p>I think you can have an idea on how Steganography can be used , take the previous example and apply to diferrent scenarios (ppl can exchange  innocent images or sound files but in reality the communicate using covert channels of these media)</p>
+<p><strong>Covert Channel</strong></p>
+<p><strong> </strong> In order to hide something inside another object and make it invisible, we have to  use some unused space inside the host file. For example if we want to store data inside an image using the simple technique called  LSB we use the least significant bit of each pixel in one color band or in all the color bands (RGD - Red Green Blue).Least significant bit do not have a big effect on the image so even if we change them it is not possible to view a diferrence.</p>
+<p>We can even use other domains of a host file , we can transform an image into the frequency  domain and hide our information into the unused frequency transformed data. The last technique is used in order to hide information in compressed media (e.g. JPG Images)</p>
+<p>Where we can hide data (General overview) Inside unused space in sound files  <a href="http://www.cl.cam.ac.uk/%7Efapp2/steganography/mp3stego/">mp3Stego</a></p>
+<ul>
+<li> Inside unused space in image files  <a href="http://linux01.gwdg.de/%7Ealatham/stego.html">JP Hide and Seek </a></li>
+<li> In video files (Inside deferrent frames , same as image techinques)</li>
+<li> Inside TCP/IP unused headers</li>
+<li> Inside/Between File System GAPS</li>
+<li> Inside Executables</li>
+<li> Inside "Fake Spam" emails <a href="http://www.spammimic.com/">Spam Mimic</a></li>
+<li> Inside White spaces in Text files  <a href="http://www.darkside.com.au/snow/index.html">Snow</a></li>
+</ul>
+<p>One of my favorite ways of Text steganography is using specified letters  from words in order to reconstruct a message. Example : Cybernetic Individual Programmed for Hazardous Exploration and Repair take the first letter of each word and you create the word cipher.</p>

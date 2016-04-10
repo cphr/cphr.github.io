@@ -1,0 +1,52 @@
+---
+layout: post
+title: Applied Honeypots
+date: 2005-12-12 17:40:15.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- honeypots
+- Security
+meta:
+  _edit_last: '2833780'
+
+---
+<p><strong>Track Big Brother using Honeypots</strong><br />
+Although a honeypot's main application is to create attractive traps for hackers, there is a good opportunity for hackers to track governmental or other information gathering agents using the same method. A scenario like that would be a really big breakthrough into the world of secrecy, since top secret tools and techniques will be revealed to the public. Can you imagine how difficult will be to make an investigation if the agent who is doing it is not sure if the system he is 'logged' is a honeypot or not? It is almost sure that someone who will be able to track a government agent searching into his data will be able to go to the court and have evidence of this intrusion into his system. The legal issues of something like that will be rough to solve. The main steps of achieving an entrapment of an agent into a honeypot are two and commonly used by governments and organisations to catch hackers. A hacker can use the same plan the 'enemy' uses.</p>
+<p><code> 
+Reputation<br />
+Content<br />
+</code></p>
+<p>Both of these steps are not difficult to achieve. Reputation: make some public noise about a particular illegal service you provide through your system so an agent will notice it (public noise is not difficult these days, especially via the web).</p>
+<p>Content: create some fake 'illegality' in your system so it can convince an observer.At this point government knows about the service you provide but since there is not any evidence about you they need to make some analysis of your system/data using forensic techniques, which most likely will be launched remotely. Note that they (government) want to see your system work in real-time so they won't stop it. Now that the hacker expects to be under investigation the only thing that he has to do is, sit back and watch. The honeypot is been used against government so we can expect it to give us some really interesting feedback. Most likely we would see exploits that haven't yet published, tools that are in total secrecy, and we might see some techniques to detect the existence of a honeypot.</p>
+<p>As we can see, honeypots are tools which can provide good analysis of a particular attack, but we must remember that every publicly available tool can be used by all the people, so the question created is, honeypots help investigators or hackers? The power that a hacker can gain using the previous technique can make him/her almost untouchable; no one would want to hack into his/her system to do investigation since the only thing that they will achieve is to give more knowledge 'out'.</p>
+<h3>Honeypots &amp; Worms</h3>
+<p>Worms are small entities, which spread 'around' using well-known vulnerabilities, with a main purpose to intrude inside a system and be able to attack from that host others and spread [http://www.securityfocus.com/infocus/1740]. Worms can 'Damage' or do 'Good', depended the way you use them. Mostly written by computer hackers and researchers, although many times antivirus companies create them for the obvious reason to make money. In order to find out how a honeypot will be useful against a worm, we need to know the most known characteristic of a network reaction during an attack. When a worm is lunched we can observe aggressive flow of traffic and bandwidth reduction. The first hint that a worm is 'around' is observed, now we can watch for a specific steps usually a known worm does, for example, if we have an attempt on port 135 of our system and the particular packet is giving known signatures of MSBlast we can be sure what is going on and send the worm to a controlled honeypot or honeynet to observe how this worm works and at the same time secure our network from the attack.</p>
+<p>The previous example is known as a defender honeypot and is based on gateway, which is acting once as a firewall and then as IDS. We have content analysis, traffic analysis, and source code analysis and port alarms. It is obvious from what we saw above that a system like that can work in case a worm is known and predictable, which in most cases will work, but during the attack of a new and unknown worm a honeypot might do damage instead, and send the worm inside our secure network. This confusion can be caused also from worms which are using encryption and/or polymorphism so it is really difficult for a honeypot to be sure if there is a worm attack or just e.g. a network problem. In a situation like that it is better to use a scheme called Sacrificial Lamb. We have to sacrifice a system in our network and leave the worm infect it. In this system we had previously created virtual hosts (using honeyd for example) in a very simple 'topology ' and big in number, so we could simulate 10.000 hosts, and see how the worm is moving inside that virtual network. 10.000 hosts is probably a good number to identify all the possible signatures of the worm and be able to update our honeypot-gateway/anti virus/firewall or IDS.</p>
+<h3>Catch information thieves using honeytokens</h3>
+<p>Some times the concept of honeypot needs to be applied to a specific information or collection of information instead of a system. In order to make this statement more clearly we can use a real life example [http://lwn.net/Articles/40925]. Lets say that you want to check if a service you are using in the internet is selling your personal information to a third party or spammers. The only way to do that is to give them some fault information and be able to confirm them.</p>
+<p>An easy way to do that is, by having a different email address for every registering you are doing to different services. First you need to have your own domain name in order to do it easier, then enable email forwarding, so every email address you create under you domain name will send the emails to your main email address.</p>
+<p>Let say that we want to open a user account with Amazon.com, during the registration process amazon will ask for a valid email address, this is where we will put our honeytoken , instead of using our main email address we put in this field : amazon.com@mydomain.com.</p>
+<p>Now every time we receive an email, which is having as recipient amazon.com@mydomain.com we know that the information came out of amazon.</p>
+<p>Another example is the Management's emails. In this scenario we need to know if someone is trying to have access to a company's high confidential information, which for example can be transferred via email. In order to achieve that we do the following: We create an email, which is having fake information about a server we are having online and this server is full of top-secret data.</p>
+<pre>
+For example:
+
+Dear manager ,
+
+These are the informations about the company's
+private server :
+Server : TopSecret.company.com
+Username : Manager1
+Password : Password1
+
+Regards ISDepartment</pre>
+<p>This email is a real trap, we are sure that if someone will login into the system TopSecret.company.com will be an attacker. Then we can track him/her down easily. As we can see from the previous examples, honeytokens can be really helpful, although this technique is not new, especially in information intelligence world.</p>
+<h3>Track Spammers with honeypots</h3>
+<p>One of the biggest problems created using the fundamental tools of web is spamming. It is difficult to catch a spammer since the mailing system itself is not secure enough. Spammers usually use 'open' (open relay) mail servers in order to do their attack. Although it is well known problem, many companies and ISPs don't take any countermeasures to avoid a usage of their servers as a spam tool because they mostly don't know that is happening, until it is very late and they get blacklisted.</p>
+<p>We mentioned earlier Open Relay, this is an option in mail servers, which lets anyone in the Internet use your mail server and deliver emails. Although this service at the beginning of the Internet revolution had a reason of existence, now it seems like the good tool for spammers to deliver their 'goods' [http://www.honeypots.net]. The main technique of spammers is to do an IP scanning combined with Service scanners in order to identify any mail servers for a given IP range. The next step is to check the found servers for an Open relay service; the usual way of doing the check is by sending an email to your self, using the server under 'analysis'. The formal name for these tests is known as Relay Test message [http://www.tracking-hackers.com/solutions/sendmail.html].</p>
+<p>Since we know the way that spammers work, we can place a honeypot and make it work as a Relay mail server, when the attacker will find that server, he will send the Relay Test message, now the honeypot knows that there is something wrong, but it will keep work as relay server and will return the relay test message. Now the spammer is sure that the server is open and he will try to lunch spamming attack. Our honeypot will be programmed to pretend that it sends all the emails the spammer delivers, in the meantime we will be able to do a research in the spammers Identity, for example find his IP, Location and ISP. Even if the attacker uses a proxy to do the work, we can track the proxy servers and inform the administrators about the misuse of their system.</p>
+<p>This is a general idea on how we can use honeypots against spammers, more practical details on how to do that visit: http://fightrelayspam.homestead.com/files/antispam06132002.htm</p>

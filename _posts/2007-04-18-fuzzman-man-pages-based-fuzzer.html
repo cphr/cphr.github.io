@@ -1,0 +1,64 @@
+---
+layout: post
+title: FuzzMan - man pages based fuzzer
+date: 2007-04-18 09:54:10.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- fuzzing
+- idea
+- tool
+meta:
+  _edit_last: '2833780'
+---
+<p><img src="{{ site.baseurl }}/assets/fuzzman.jpg" alt="" /> <em>Fuzzing using man pages</em> This article is to introduce a (probably) new fuzzing idea  (<a href="http://cipher.org.uk/2007/04/18/fuzzman-man-pages-based-fuzzer/">FuzzMan</a>)  that is built around man pages. Many know that in *nix systems if you type <strong>man command</strong> you  will get a <a href="http://en.wikipedia.org/wiki/Manual_page_%28Unix%29">manual page</a> informing you on how to use a specific tool. So by just looking at the manual  you can find out pretty much in seconds what type of argument and what options are offered by  any given command.</p>
+<p>The format which man pages follow is universal (mostly), so it is not very difficult to  make a script and extract the offered options - which is exactly what gave me the idea of making a tool that can generate fuzzing data based on manual pages. Based on that  concept we can fuzz as accurately as possible any command that has a man page.</p>
+<p>So lets take a command and generate fuzzing data.</p>
+<p>The choice for this example is "shar" <em>- GNU sharutils 4.2.1</em></p>
+<p><strong>Shar</strong> creates  "shell  archives"  (or  shar files) which are in text format and can be mailed.  These files may be unpacked later by executing them with /bin/sh.  The resulting archive is sent to standard out unless the -o option is  given.</p>
+<p>Below you can see how a man page looks in the console<br />
+<img src="{{ site.baseurl }}/assets/fuzzman1.jpg" alt="" /><br />
+or have a look at the On-line <strong>Shar</strong> <a href="http://linuxmanpages.com/man1/shar.1.php">Manual page</a>There are several options available for this command and therefore the fuzzer has to generate lots of combinations. Fuzzman catches signals so if you see that you have enough combinaitons you can press ctrl-c.<br />
+if you type <strong>./fuzzman.pl shar</strong> you get :</p>
+<p><code>=== Extract arguments for "shar" ===<br />
+STANDARD<br />
+: --version<br />
+: --print-text-domain-dir<br />
+: --help<br />
+: --version<br />
+:        -q<br />
+:        -p<br />
+:        -Z<br />
+:        -S<br />
+:        -z<br />
+:        -o<br />
+:        -l<br />
+:        -L<br />
+:        -n<br />
+.<br />
+.<br />
+.<br />
+: --no-i18n<br />
+: --print-text-domain-dir<br />
+ADDITIONAL<br />
+: EXTRA BoF Arg<br />
+: EXTRA Format String Arg<br />
+: EXTRA Numbers  Arg</code></p>
+<p><code>:Number of Arguments :36 <strong>&lt;=== it is not 100% accurate</strong> but is very close</p>
+<p></code></p>
+<p><code>=== Generate Fuzzing Script ===<br />
++STOP GENERATOR WITH CTRL-C<br />
+:Agrument combinations  : 1040  <strong>&lt;== This is the combinations counter</strong><br />
+:Partial shar.sh, not all combinations have been generated<br />
+:Run fuzzing script [sh shar.sh]</code></p>
+<p>We can see above that there are approximately 36 options. That would create several thousand combinations so I stopped it at 1040 combinations. Fuzzman tried different options adding arguments that could potentially lead to different overflow types, now the shar.sh script is ready.</p>
+<p>Starting the shar.sh will execute the command 1040 times.<br />
+<img src="{{ site.baseurl }}/assets/fuzzman2.jpg" alt="" /><br />
+As we can see above we hit into a bug, Segmentation fault is always a sign.</p>
+<p>You can download Fuzzman from <a href="https://github.com/cphr/fuzzman">here</a>,<br />
+Enjoy<em> </em></p>
+<p><em> </em></p>
+<p><em>Note: This version of Sharutils have been reported for both Buffer Overflow and Format string vulns some time ago  (<a href="http://securityfocus.com/archive/1/359639/30/0/threaded">here</a> and <a href="http://securityfocus.com/bid/11298/info">here</a>)</em></p>

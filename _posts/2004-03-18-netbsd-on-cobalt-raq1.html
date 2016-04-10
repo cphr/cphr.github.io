@@ -1,0 +1,50 @@
+---
+layout: post
+title: NetBSD on Cobalt RAQ1
+date: 2004-03-18 14:54:50.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- cobalt
+- netbsd
+meta:
+  _edit_last: '2833780'
+
+---
+<p><img class="alignnone size-full wp-image-340" title="netbsdlogo" src="{{ site.baseurl }}/assets/netbsdlogo.jpg" alt="netbsdlogo" width="40" height="40" /><br />
+Install NetBSD on Cobalt RAQ1 Why install netbsd on a Cobalt RAQ ? cause the restore OS they provide is  so old and unsupported it can be considered Dead, plus NetBSD is cool.</p>
+<p>After I got my own small and pretty RAQ1<br />
+<img class="alignnone size-full wp-image-341" title="raq_cobalt" src="{{ site.baseurl }}/assets/raq_cobalt.jpg" alt="raq_cobalt" width="200" height="20" /><br />
+I had a big problem on which OS to install. Although the obvious route was Cobalt OS restore CD (a very old debian) it had many problems, it supports only a very limited number of ethernet cards both in desktops and laptops and  it has many outdated or unpatched services. The best choice to my opinion(and not only) is NetBSD which has a port for Cobalt (MIPS)  and almost for any other machine with hard drive and memory on the planet.</p>
+<p>So what do you need to do that ?</p>
+<ul>
+<li>Download an iso from  	<a href="ftp://ftp.netbsd.org/pub/NetBSD/arch/cobalt/restore-cd/1.6.1">here </a> and download this file :image_raq1.iso.gz . Create an ISO cd and we are almost done.</li>
+<li>Have another working machine ready to act as the host for the net-installation.</li>
+<li>X-over cable or a hub with only these 2 machines connected on.</li>
+</ul>
+<p>Put the cd inside your destkop/laptop and boot it up from the cdrom (set your bios). Wait until the instructions screen come up. After that press 'q' and login as 'root' . There is no password so don't worry. As soon you are "shelled" type 'ifconfig -a' and if your nic card is recognised you can  start preparing the space on your desk for you RAQ (Otherwise find another computer  and do the same).</p>
+<p>Now connect your RAQ with the desktop/laptop with an X-over cable or via a hub.  Since we want to install the OS via ethernet we need to inform the RAQ that we  need it to start in Net Boot mode.</p>
+<ul>
+<li>Power UP</li>
+<li>Press both Left and Right cursor buttons on the front Panel</li>
+</ul>
+<p>You will now see the Net Boot on the LCD Screen , after that you just see different operations that the installer is doing. After the machine reboots, thats it, ready to go.</p>
+<p>Advice: as soon as you login into the server,</p>
+<pre>passwd root
+passwd toor
+useradd -m username
+passwd username
+add your self in the wheel user group so you can use 'su'.
+vi /etc/ifconfig.tlp0 (set your IP address and the subnet)
+vi /etc/rc.conf (disable/enable services)
+	+ configure /etc/rc.conf to something like
+			hostname="servername"
+			dhclient=NO
+			nfs_client=NO
+			paneld=YES
+			inetd=NO
+			sshd=YES
+reboot</pre>

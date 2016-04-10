@@ -1,0 +1,98 @@
+---
+layout: post
+title: Phishing Techniques
+date: 2004-07-22 12:44:30.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- phishing
+meta:
+  _edit_last: '2833780'
+---
+<p>Many Techniques exist on how to scam people  using email or websites. This is a list of some of the obfuscation.</p>
+<p>(have your eyes open)<br />
+URL Obscurity</p>
+<pre>Using Password fields:
+http://username:password@www.example.com/
+
+Ex.
+http://www:microsoft.com/download/@www.cipher.org.uk
+This link will lead to cipher.org.uk and not Microsoft
+
+Using different Base:
+Dword Format
+http://dword format
+Generalised formula to convert to dword format
+Let say that we have a url http://a.b.c.d
+DwordURL=((((a*256)+b)*255+c)*256+d)
+so now we have http://((((a*256)+b)*255+c)*256+d)
+
+Octal Format
+http://octal
+Generalised formula to convert to Octal
+Let say that we have a url http://a.b.c.d
+OctalURL= 0Base8(a).0Base8(b).0Base8(c).0Base8(d)
+You need at least one leading zero.
+
+Hex Format
+http://hex
+Generalised formula to convert to Hex
+Let say that we have a url http://a.b.c.d
+HexURL = Base16(a).Base16(b).Base16(c).Base16(d)
+or
+HexURL = Base16(a.b.c.d)
+
+Using Redirection
+Lets say that IBM use a script which can load another
+webpage inside their main website :
+e.g. :http://www.IBM.com/url?p=http://www.google.com.
+You can use that to exploit trust.
+
+Using Cross Site Scripting
+Reported vulns on different web applications provide
+crossscripting gateway for the Phiserman.
+
+-Via Search engine
+ Be sure that the search engine in your organisation
+ doesnt accepts JavaScript,VBScript,HTML,JSP or
+ any active content injection.
+ Type that
+ alert('css')
+ if this doesnt work , go to a Hex converter and
+ convert that into Hex. Then paste it in the
+ search engine field and press search.
+(If it is vuln attacker can use popup window
+to gain trust)
+
+Typographical domain Mistakes
+Instead of paypal.com,paypai.com,paypa1.com
+Gain trust exploiting human vision.
+
+Visual spoofing
+Is possble if :
+You create a popup window which you set it not
+to have scroll bars,status bar etc. You reporgram
+the interface with javascript and you add SSL lock.
+
+Browser Bugs
+Using different browser bugs you can fake
+url or a Certificate :
+
+-Extensive amount of characters can disable
+ status bar view of a link
+-Using <a href="http://www.cipher.org.uk/index.php?p=advisories/Certificate_Stealing_Phising_IE_30-04-2004.advisory">this</a> You can gain trust using someone else's
+Certificate and URL.(new bugs come every day)
+
+Proxying
+Fake direct session using proxy. Provide a link
+to a legitimate website,using any of the previous
+bugs, load the legal website via you proxy. SSL
+certificate,forms,webpages ...everything will be
+real but everything will be passed to the victim
+via your proxy , so you can sniff the communication.
+
+Historical Phishing Example
+http://www.math.org.il/pic.gif</pre>

