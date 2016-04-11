@@ -1,13 +1,11 @@
-# Site settings
 include: ["_pages"]
 permalink: /:year/:month/:day/:title/
 title: Cipher 
 description: > # this means to ignore newlines until "baseurl:"
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://cipher.org.uk" # the base hostname & protocol for your site
+baseurl: "" 
+url: "http://cipher.org.uk" 
 github_username:  cphr
 
-# Build settings
 markdown: kramdown
 
 

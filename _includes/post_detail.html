@@ -11,5 +11,13 @@
 <div class="entry-content">{{ content }}
 	
 	<br>
-- <a class="page-link" href="/texts/">Older Random Public Texts</a>
+<div class="PageNavigation">
+  {% if post.previous.url %}
+    <a class="prev" href="{{post.previous.url}}">&laquo;
+	{{post.previous.title}}</a>
+  {% endif %}
+</div>
+
+
+
 	</div>
