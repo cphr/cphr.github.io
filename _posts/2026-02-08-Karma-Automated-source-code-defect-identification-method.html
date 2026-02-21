@@ -68,12 +68,12 @@ The method described in this text provides:
 <p>
 The main objective is to create a zero-knowledge source code analyser, able to point to any 'interesting pieces' of code within any language and context. Instead of creating a collection (e.g <a href="http://cipher.org.uk/Bugle/">bugle</a>, most source code analysis tools including AST based) of potentially dangerous strings or rulesets, we train a classifier do it for us very quickly. 
 </p>
-
+<br>
 <blockquote>Classify: “ … arrange (a group) in classes according to shared characteristics... assign to a particular class or category…”(Oxford Dictionary)</blockquote>
-
+<br>
 <p>
 Data classification, a sub-discipline of machine learning (Webb) (Bishop) (MacKay) can be used to assist with the categorization of the under scrutiny data. However to achieve this, we need to provide empirical data to the classifier. We need to supply a large number of problematic code snippets or bugs for the classifier to acquire the required knowledge.  
-<strong>A way to do it is using software patches.</strong> 
+A way to do it is using <strong>software patches.</strong> 
 </p>
 
 <center><img src="/assets/patch.jpg" width=500></center>
