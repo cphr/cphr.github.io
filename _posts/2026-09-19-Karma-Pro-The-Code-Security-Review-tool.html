@@ -26,7 +26,7 @@ meta:
 <pre>The security scanner traces taint</pre>
 <p>Karma Pro's scanner does <strong>inter-procedural taint tracking</strong> over ASTs, it also includes a heuristic engine:</p>
 <ul>
-<li><strong>Buffer overflow, format strings, command injection, SQL injection, path traversal, SSRF, insecure deserialization, weak crypto and randomness, hardcoded secrets, log injection, XSS, race conditions / TOCTOU</strong>, and the Solidity-specific set: reentrancy, tx.origin authorization, predictable randomness, unchecked external-call returns, delegatecall to untrusted addresses, selfdestruct to arbitrary addresses, pragma hygiene.</li>
+<li>Several types of issues like<strong>Several types of issues like injections, overflows, randomness, race conditions etc</strong></li>
 <li><strong>Cross-file taint.</strong> Karma Pro builds a <strong>project-wide dependency index</strong> across every file. When a taint source is defined in a <em>different</em> file than the sink you're looking at, across imports, requires, includes, the finding is marked <strong>Cross-file</strong>. </li>
 <li><strong>Mobile rule sets</strong> for Android (Java) and iOS/Cocoa (Objective-C): WebView hardening, JavaScript bridges, TLS trust-manager and hostname-verifier bypasses, raw SQL, clipboard/pasteboard leakage, UserDefaults and Keychain misconfiguration, deprecated UIWebView, deep-link exposure, file-protection levels, location and contact access.</li>
 <li><strong>Engines</strong>: Karma Pro tells you whether a finding was proven structurally over the parsed <strong>AST</strong> or matched as a <strong>Heuristic</strong> pattern. </li>
