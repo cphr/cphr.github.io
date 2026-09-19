@@ -32,7 +32,7 @@ meta:
 <li><strong>Engines</strong>: Karma Pro tells you whether a finding was proven structurally over the parsed <strong>AST</strong> or matched as a <strong>Heuristic</strong> pattern. </li>
 </ul><br>
 <pre>ML classifier trained on patches</pre>
-<p>Scanners with fixed rules miss what they've never seen. Karma Pro's <strong>Bayesian vulnerability classifier</strong> implements the <em>Karma method</em> (<a href="https://cipher.org.uk/2026/02/08/Karma-Automated-source-code-defect-identification-method/">an automated source-code defect identification technique</a>): it's trained on <strong>software patches</strong>, to learn how often each token appears in buggy code versus safe code.</p>
+<p>Scanners with fixed rules miss issues if they don't have the defined rules for them. Karma Pro's <strong>Bayesian vulnerability classifier</strong> implements the <em>Karma method</em> (<a href="https://cipher.org.uk/2026/02/08/Karma-Automated-source-code-defect-identification-method/">an automated source-code defect identification technique</a>): it's trained on <strong>software patches</strong>, to learn how often each token appears in buggy code versus safe code.</p>
 <p>At scan time, every line is reduced to tokens, and the classifier computes the probability that a line is a defect. Lines that feel like bugs get a <strong>confidence score</strong>, and a per-file <strong>heatmap</strong> lets you see risk concentration.</p>
 <ul>
 <li><strong>ML Training window</strong> to feed positive and negative samples and update the model.</li>
