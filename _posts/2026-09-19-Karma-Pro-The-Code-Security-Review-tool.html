@@ -35,14 +35,14 @@ meta:
 <p>Scanners with fixed rules miss what they've never seen. Karma Pro's <strong>Bayesian vulnerability classifier</strong> implements the <em>Karma method</em> (<a href="https://cipher.org.uk/2026/02/08/Karma-Automated-source-code-defect-identification-method/">an automated source-code defect identification technique</a>): it's trained on <strong>software patches</strong>, to learn how often each token appears in buggy code versus safe code.</p>
 <p>At scan time, every line is reduced to tokens, and the classifier computes the probability that a line is a defect. Lines that feel like bugs get a <strong>confidence score</strong>, and a per-file <strong>heatmap</strong> lets you see risk concentration.</p>
 <ul>
-<li><strong>ML Training window</strong> to feed positive and negative samples and update the model live.</li>
+<li><strong>ML Training window</strong> to feed positive and negative samples and update the model.</li>
 <li><strong>Model import &amp; export</strong> so you can back up your classifier (model) or share it with anyone.</li>
-<li><strong>ML Scan</strong> a probabilistic sweep across the project that surfaces <em>candidate</em> defects the fixed rules might miss. It's complementary to the deterministic scanner: probabilistic leads + proven, taint-verified findings.</li>
+<li><strong>ML Scan</strong> a probabilistic sweep across the project that surfaces <em>candidate</em> defects the fixed rules might miss. It's complementary to the deterministic scanner: probabilistic leads plus taint-verified findings.</li>
 </ul><br>
 <pre>Code navigation</pre>
 <ul>
-<li><strong>Syntax highlighting</strong> per language: keywords, strings, comments, identifiers all get their own colors.</li>
-<li><strong>Clickable functions/methods</strong>: function/method name in your source is underlined and linked. Click and Karma Pro opens its <strong>transitive same-file call graph and dataflow</strong> in the bottom pane.</li>
+<li><strong>Syntax highlighting</strong> per language: keywords, strings, comments, identifiers.</li>
+<li><strong>Clickable functions/methods</strong>: function/method name in your source is underlined and linked. Click and Karma Pro opens its <strong> same-file call graph and dataflow</strong> in the bottom pane.</li>
 <li><strong>Definition popups</strong> for call sites and a right-click menu that adapts to whatever is under the pointer (the function or method needs to be defined within the project in order for it to popup).</li>
 </ul><br>
 <pre>Diagrams</pre>
