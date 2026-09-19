@@ -20,10 +20,10 @@ meta:
 <p style="text-align:center;"><a href="https://github.com/cphr/karmapro/releases/download/v0.10/Karma.Pro.dmg" style="display:inline-block;background:#2a7ae2;color:#fff;padding:10px 26px;border-radius:4px;text-decoration:none;font-weight:600;">Download DMG self-signed App</a></p>
 <p style="text-align:center;"><a href="https://github.com/cphr/karmapro">Source code here</a></p>
 <hr />
-<b><h3>It supports 14 languages</h3></b>
+<pre>It supports 14 languages</pre>
 <p>Karma Pro supports: <strong>C, C++, Objective-C / Cocoa, Java, C#, Go, Kotlin, Ruby, Python, PHP, Javascript, Rust, Solidity, and Swift</strong> (note the Bayesian scanning supports any language as long as it has been trained with the relevant security patches). Each language gets tokenizers and AST parsers so the tool can recognise what a <strong>for</strong> loop is, what a class method is, and where a function starts and ends.</p>
 <p>Open a folder (or drag it onto the window), and Karma Pro walks the tree, filters by language, and lets you jump around with file search and code search. </p><br>
-<b><h3>The security scanner traces taint</h3></b>
+<pre>The security scanner traces taint</pre>
 <p>Karma Pro's scanner does <strong>inter-procedural taint tracking</strong> over ASTs, it also includes a heuristic engine:</p>
 <ul>
 <li><strong>Buffer overflow, format strings, command injection, SQL injection, path traversal, SSRF, insecure deserialization, weak crypto and randomness, hardcoded secrets, log injection, XSS, race conditions / TOCTOU</strong>, and the Solidity-specific set: reentrancy, tx.origin authorization, predictable randomness, unchecked external-call returns, delegatecall to untrusted addresses, selfdestruct to arbitrary addresses, pragma hygiene.</li>
@@ -31,7 +31,7 @@ meta:
 <li><strong>Mobile rule sets</strong> for Android (Java) and iOS/Cocoa (Objective-C): WebView hardening, JavaScript bridges, TLS trust-manager and hostname-verifier bypasses, raw SQL, clipboard/pasteboard leakage, UserDefaults and Keychain misconfiguration, deprecated UIWebView, deep-link exposure, file-protection levels, location and contact access.</li>
 <li><strong>Engines</strong>: Karma Pro tells you whether a finding was proven structurally over the parsed <strong>AST</strong> or matched as a <strong>Heuristic</strong> pattern. </li>
 </ul><br>
-<b><h3>ML classifier trained on patches</h3></b>
+<pre>ML classifier trained on patches</pre>
 <p>Scanners with fixed rules miss what they've never seen. Karma Pro's <strong>Bayesian vulnerability classifier</strong> implements the <em>Karma method</em> (<a href="https://cipher.org.uk/2026/02/08/Karma-Automated-source-code-defect-identification-method/">an automated source-code defect identification technique</a>): it's trained on <strong>software patches</strong>, to learn how often each token appears in buggy code versus safe code.</p>
 <p>At scan time, every line is reduced to tokens, and the classifier computes the probability that a line is a defect. Lines that feel like bugs get a <strong>confidence score</strong>, and a per-file <strong>heatmap</strong> lets you see risk concentration.</p>
 <ul>
@@ -39,26 +39,26 @@ meta:
 <li><strong>Model import &amp; export</strong> so you can back up your classifier (model) or share it with anyone.</li>
 <li><strong>ML Scan</strong> a probabilistic sweep across the project that surfaces <em>candidate</em> defects the fixed rules might miss. It's complementary to the deterministic scanner: probabilistic leads + proven, taint-verified findings.</li>
 </ul><br>
-<b><h3>Code navigation</h3></b>
+<pre>Code navigation</pre>
 <ul>
 <li><strong>Syntax highlighting</strong> per language: keywords, strings, comments, identifiers all get their own colors.</li>
 <li><strong>Clickable functions/methods</strong>: function/method name in your source is underlined and linked. Click and Karma Pro opens its <strong>transitive same-file call graph and dataflow</strong> in the bottom pane.</li>
 <li><strong>Definition popups</strong> for call sites and a right-click menu that adapts to whatever is under the pointer (the function or method needs to be defined within the project in order for it to popup).</li>
 </ul><br>
-<b><h3>Diagrams</h3></b>
+<pre>Diagrams</pre>
 <ul>
 <li><strong>Control-flow flowcharts.</strong> Click any function/method and Karma Pro draws its actual flowchart, cyclomatic complexity, if/else branches, loops, as an interactive graph you can pan, zoom, drag nodes, and click to jump to the line.</li>
 <li><strong>Follow the variable.</strong> Right-click an identifier and Karma Pro builds a <strong>variable-flow diagram</strong>: the enclosing function drawn as a flowchart with every statement that uses your variable highlighted. Pass that variable into a function defined in another file, a <strong>callee box</strong> appears showing only the lines where the mapped parameter is used, and then it expands recursively, hopping across files, following imports and requires. Blue "call" arrows leave the call, purple "return" arrows rejoin the caller. Click any node to open the exact line.  </li>
 <li><strong>The Backtrace Analyser.</strong> Right-click anywhere within the source code and choose the backtrace analyser. Paste a crash or stack trace, hit Analyse, and Karma Pro parses the frames into a clickable <strong>left-to-right call-stack diagram</strong>, resolved against your open project (unresolved frames are red). Click a frame, and you're at the source line.</li>
 <li><strong>Class usage, data flow, call graphs.</strong>  Karma Pro renders it as an animated graph, the class as the central node, every new ClassName(...) site below it. Data-flow analysis traces assignments, parameter taint, and inter-procedural calls within a file to show how untrusted input reaches a dangerous sink.</li>
 </ul><br>
-<b><h3>The AI Assistant</h3></b>
+<pre>The AI Assistant</pre>
 <p>Connect Karma Pro to <strong>OpenRouter</strong>, pick any model from the dropdown (Claude, GPT-4o, Gemini, Llama, DeepSeek, Mistral…), and ask questions about the <em>currently open project</em>, the project path rides along in the system prompt automatically. Right-click any line and choose <strong>(AI) How to fix it</strong> to get remediation guidance for whatever it was flagged.</p><br>
-<b><h3>Notes and prompts</h3></b>
+<pre>Notes and prompts</pre>
 <p>There's a <strong>Notes window</strong> to keep annotations on files, a <strong>prompt store</strong> with template management (add, edit, remove, import, export) for the AI assistant. Everything is indexed once, at load time, and shared across every feature.</p><br>
-<b><h3>The Bugs Tracker</h3></b>
+<pre>The Bugs Tracker</pre>
 <p>Every finding can be added in the <strong>Security Bugs Tracker</strong> where you can manage all your findings.</p><br>
-<b><h3>Private Research Wiki</h3></b>
+<pre>Private Research Wiki</pre>
 <p>The Wiki tool opens a private research wiki shared across all projects. Write pages in a rich-text editor, hyperlink selected words instantly, and click any link to open the page, creating it if it doesn't exist yet.</p>
 <hr /><br>
 <p>Karma Pro works on <strong>macOS 12.0 (Monterey) and newer</strong>.<br>
