@@ -15,13 +15,13 @@ tags:
 meta:
   _edit_last: '2833780'
 ---
-<p>Karma Pro is an open source security code review tool (source code <a href="https://github.com/cphr/karmapro">here</a>) that can assist code reviewers with a multitude of useful tools. Karma Pro is a macOS source-code security scanner (AST base and Heuristics) that statically analyses projects in multiple languages. It's backed by an ML classifier trained on real patches to catch subtle issues. Beyond scanning, it offers interactive call graphs and data-flow diagrams, a bug tracker, a private research wiki, notes, backups, and an AI assistant.</p>
+<p>Karma Pro is an open source, security code review tool (source code <a href="https://github.com/cphr/karmapro">here</a>) that can assist code reviewers with a multitude of useful tools. Karma Pro is a macOS source-code security scanner (AST base and Heuristics) that statically analyses projects in multiple languages. It's backed by an ML classifier trained on real patches to catch subtle issues. Beyond scanning, it offers interactive call graphs and data-flow diagrams, debugger simulator, a bug tracker, a private research wiki, notes, backups, and an AI assistant.</p>
 <p><img alt="Karma Pro" src="/assets/Karmapro.gif" /></p>
 <p style="text-align:center;"><a href="https://github.com/cphr/karmapro/releases/download/v0.10/Karma.Pro.dmg" style="display:inline-block;background:#2a7ae2;color:#fff;padding:10px 26px;border-radius:4px;text-decoration:none;font-weight:600;">Download DMG self-signed App</a></p>
 <p style="text-align:center;"><a href="https://github.com/cphr/karmapro">Source code here</a></p>
 <hr />
 <pre>It supports 14 languages</pre>
-<p>Karma Pro supports: <strong>C, C++, Objective-C / Cocoa, Java, C#, Go, Kotlin, Ruby, Python, PHP, Javascript, Rust, Solidity, and Swift</strong> (note the Bayesian scanning supports any language as long as it has been trained with the relevant security patches). Each language gets tokenizers and AST parsers so the tool can recognise what a <strong>for</strong> loop is, what a class method is, and where a function starts and ends.</p>
+<p>Karma Pro supports: <strong>C, C++, Objective-C / Cocoa, Java, C#, Go, Kotlin, Ruby, Python, PHP, Javascript, Rust, Solidity, Swift</strong> (note the Bayesian scanning supports any language as long as it has been trained with the relevant security patches). Each language gets tokenizers and AST parsers so the tool can recognise what a <strong>for</strong> loop is, what a class method is, and where a function starts and ends.</p>
 <p>Open a folder and Karma Pro walks the tree, filters by language, and lets you jump around with file search and code search. Everything is indexed once, at load time, and shared across every feature.</p><br>
 <pre>The security scanner traces taint</pre>
 <p>Karma Pro's scanner does <strong>inter-procedural taint tracking</strong> over ASTs, it also includes a heuristic engine:</p>
