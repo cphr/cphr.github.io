@@ -30,7 +30,7 @@ meta:
 <li><strong>Cross-file taint.</strong> Karma Pro builds a <strong>project-wide dependency index</strong> across every file. When a taint source is defined in a <em>different</em> file than the sink you're looking at, across imports, requires, includes, the finding is marked <strong>Cross-file</strong>. </li>
 <li><strong>Mobile rule sets</strong> for Android (Java/Kotlin) and iOS/Cocoa (Objective-C): WebView hardening, JavaScript bridges, TLS trust-manager and hostname-verifier bypasses, raw SQL, clipboard/pasteboard leakage, UserDefaults and Keychain misconfiguration, deprecated UIWebView, deep-link exposure, file-protection levels, location and contact access.</li>
 <li><strong>Engines</strong>: Karma Pro tells you whether a finding was proven structurally over the parsed <strong>AST</strong> or matched as a <strong>Heuristic</strong> pattern. Note: if you chose AI scan to be performed, you will also see <strong>AI</strong> results.</li>
-</ul><br>
+</ul><br> 
 <pre>ML classifier trained on patches</pre>
 <p>Scanners with fixed rules miss issues if they don't have the defined rules for them. Karma Pro's <strong>Bayesian vulnerability classifier</strong> implements the <em>Karma method</em> (<a href="https://cipher.org.uk/2026/02/08/Karma-Automated-source-code-defect-identification-method/">an automated source-code defect identification technique</a>): it's trained on <strong>software patches</strong>, to learn how often each token appears in buggy code versus safe code.</p>
 <p>At scan time, every line is reduced to tokens, and the classifier computes the probability that a line is a defect. Lines that feel like bugs get a <strong>confidence score</strong>, and a per-file <strong>heatmap</strong> lets you see risk concentration.</p>
