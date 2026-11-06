@@ -56,7 +56,7 @@ vertical-align: top;
 
 <p><img alt="Karma Pro" src="/assets/karmapro-scrnsht.jpg" /></p>
 <br>
-<h3>1. Introduction</h3>
+<h3><strong>1. Introduction</strong></h3>
 <p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). Each model scanned the code at least 3 times.</p>
 <p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
 <p><img alt="Claude output" src="/assets/claude.jpg" /></p>
@@ -68,7 +68,7 @@ vertical-align: top;
 <li><strong>Branchless MBA clamping</strong>: a branchless min(n, 9) using sign-bit masking instead of a ternary operator, making the bounds check appear as bitwise arithmetic</li>
 </ol>
 <hr /><br>
-<h3>2. The clean vulnerable program</h3>
+<h3><strong>2. The clean vulnerable program</strong></h3>
 <h3>Clean source (clean.c)</h3>
 <pre><code class="c">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 <h3>What it does</h3>
 <p>It prints the supplied name. strcpy copies bytes until it hits a null terminator (\0). If argv[1] is 11+ bytes, strcpy writes past buffer[10], corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input "AAAAAAAAAAA" (11 bytes) to strcpy writes 11 chars + \0 = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr /><br>
-<h3>3. The transformed program</h3>
+<h3><strong>3. The transformed program</strong></h3>
 <pre><code class="c">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdint.h&gt;
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 </table></div>
 <p>The <strong>behavior is identical</strong>, for any input, same bytes written to same locations. Overflow still at 10 bytes.</p>
 <hr /><br>
-<h3>4. Technique 1  Lowering strcpy to an explicit loop</h3>
+<h3><strong>4. Technique 1  Lowering strcpy to an explicit loop</strong></h3>
 <p>Replaced:</p>
 <pre><code class="c">strcpy(buffer, argv[1]);
 </code></pre>
@@ -183,7 +183,7 @@ buffer[k] = 0;
 <p>strcpy is a single library call, pattern matchable. The loop forces the model to trace k. strlen returns length n. strcpy writes n + 1 bytes. Our loop writes k chars + terminator at buffer[k] = k + 1 bytes. When k = n, identical to strcpy.</p>
 <p><strong>*strcpy malloc etc functions are attention magnets</strong></p>
 <hr /><br>
-<h3>5. Technique 2  Enum / Preprocessor Divergence</h3>
+<h3><strong>5. Technique 2  Enum / Preprocessor Divergence</strong></h3>
 <h3>What "Enum / Preprocessor Divergence" means</h3>
 <p>An <strong>enumeration constant</strong> is a named integer declared with enum, for example 
 enum { M0 = 9};. The compiler knows its value. The <strong>preprocessor</strong> the text-substitution pass that runs before compilation does not: enumerators are not macros, so M0 is still an ordinary identifier when an #if directive is evaluated.</p><br>
@@ -254,7 +254,7 @@ return n;
 <h3>Why enum not #define?</h3>
 <p>#define M0 9 would be visible to the preprocessor. enum creates a compiler known constant the preprocessor ignores. This is the essential ingredient.</p>
 <hr />
-<h3>6. Technique 3  Branchless MBA Clamping</h3>
+<h3><strong>6. Technique 3  Branchless MBA Clamping</strong></h3>
 <h3>What "Branchless MBA Clamping" means</h3>
 <p>The name combines three ideas:</p>
 <ul>
@@ -328,7 +328,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 - If n >= 9: diff >= 0, high bit clear to diff &gt;&gt; 63 = 0 to mask = 0 to result 9
 </code></pre>
 <hr /><br>
-<h3>7. What each trick contributes</h3>
+<h3><strong>7. What each trick contributes</strong></h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -360,7 +360,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tbody>
 </table></div>
 <hr /><br>
-<h3>8 Hedging behaviour</h3>
+<h3><strong>8 Hedging behaviour</strong></h3>
 <p>While investigating different mathematical methods to hide buffer lengths and comparison as evasion techniques we noticed and we tested, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
 <h3>8.1 The two behaviours</h3>
 <div class="table-wrap"><table>
@@ -539,7 +539,7 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 <p>The finding stayed at the level of the range: <em>"can be n-1 or n ... when g0(n) returns 0 or -1"</em>. It did not need a specific length to flag.</p>
 <p>And a few more that had the same vague or hedged explanation. The boundary is not math difficulty, guard strength,or cosmetic margin. It is whether the model can obtain a <strong>proof</strong> of capacity &gt;= n + 1</p>
 <hr />
-<h3>9. Conclusion</h3>
+<h3><strong>9. Conclusion</strong></h3>
 <p>This research demonstrates that a stack buffer overflow can be concealed from <strong>all four AI models</strong> by combining:</p>
 <ol>
 <li><strong>Enum/preprocessor divergence</strong>: exploits the reader/preprocessor gap</li>
