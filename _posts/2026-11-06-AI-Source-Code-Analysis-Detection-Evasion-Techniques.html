@@ -57,7 +57,7 @@ vertical-align: top;
 <p><img alt="Karma Pro" src="/assets/karmapro-scrnsht.jpg" /></p>
 <br>
 <h3>1. Introduction</h3>
-<p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). </p>
+<p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). Each model scanned the code at least 3 times.</p>
 <p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
 <p><img alt="Claude output" src="/assets/claude.jpg" /></p>
 <p><br>However if I ask, some of the models know they missed the planted vulnerability but they could not reason to it.</p>
@@ -361,7 +361,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </table></div>
 <hr /><br>
 <h3>8 Hedging behaviour</h3>
-<p>While investigating different evasion methods we noticed and we tested that directly, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
+<p>While investigating different mathematical methods to hide buffer lengths and comparison as evasion evasion techniques we noticed and we tested, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
 <h3>8.1 The two behaviours</h3>
 <div class="table-wrap"><table>
 <thead>
