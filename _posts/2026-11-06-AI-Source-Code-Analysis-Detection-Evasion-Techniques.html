@@ -504,7 +504,7 @@ buffer[n] = 0;
 static size_t g1(size_t n) {
     return (size_t)((long)n + (long)g0(n));
 }
-
+ 
 size_t b = g1(n);
 char buffer[b];
 if (n &lt; n + 1) {                        /* always true, no check on b */
