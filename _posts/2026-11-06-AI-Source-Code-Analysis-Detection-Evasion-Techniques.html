@@ -324,7 +324,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 <p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (-, &gt;&gt;, &amp;, |, ~) that resembles cryptographic mixing or population count, not a bounds check.</p>
 <p>This uses <strong>two's complement sign-bit extraction</strong>:</p>
 <pre><code class="c">For size_t (unsigned) n:
-- If n &lt; 9: n - 9 underflows, high bit set to diff &gt;&gt; 63 = 1 to mask = all 1s → result n
+- If n &lt; 9: n - 9 underflows, high bit set to diff &gt;&gt; 63 = 1 to mask = all 1s to result n
 - If n >= 9: diff >= 0, high bit clear to diff &gt;&gt; 63 = 0 to mask = 0 to result 9
 </code></pre>
 <hr /><br>
@@ -384,7 +384,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tr>
 </tbody>
 </table></div>
-<p>A hedge is <strong>not</strong> a near miss. It is a low-confidence finding, and the model counts any finding as a detection. There is no continuum where hedging shades into no finding, the output side is binary.</p>
+<p>A hedge is <strong>not</strong> a near miss. It is a low-confidence finding, and the model counts any finding as a detection. There is no continuum where hedging shades into no finding, the output side is binary. However its worth further research to estimate the potential of flipping to a no finding at certain conditions.</p>
 <h3>8.2 The named mathematics</h3>
 <p>The capacities were built from standard arithmetic functions so the model had to evaluate a real object, not just subtract constants.</p>
 <div class="table-wrap"><table>
