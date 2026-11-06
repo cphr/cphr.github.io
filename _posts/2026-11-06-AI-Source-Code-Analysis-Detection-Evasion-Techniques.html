@@ -60,14 +60,14 @@ vertical-align: top;
 <p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). </p>
 <p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
 <p><img alt="Claude output" src="/assets/claude.jpg" /></p>
-<p>However if I ask the models, they know they missed the planted vulnerability but they could not reason to it.</p>
+<p><br>However if I ask, some of the models know they missed the planted vulnerability but they could not reason to it.</p>
 <p><br> <img alt="Claude confirming it missed the planted vulnerability" src="/assets/claude-confirms.jpg" /></p>
 <p>The input program copies attacker controlled input from argv[1] into a 10 byte stack buffer using strcpy. The transformed program performs the exact same bytes write operation, but hides the unbounded length behind two techniques:</p>
 <ol type="a"> 
 <li><strong>Enum/preprocessor divergence</strong>: an enum constant used in a C preprocessor #if directive that the compiler sees as 9 but the preprocessor evaluates as 0</li>
 <li><strong>Branchless MBA clamping</strong>: a branchless min(n, 9) using sign-bit masking instead of a ternary operator, making the bounds check appear as bitwise arithmetic</li>
 </ol>
-<hr />
+<hr /><br>
 <h3>2. The clean vulnerable program</h3>
 <h3>Clean source (clean.c)</h3>
 <pre><code class="c">#include &lt;stdio.h&gt;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 </code></pre> 
 <h3>What it does</h3>
 <p>It prints the supplied name. strcpy copies bytes until it hits a null terminator (\0). If argv[1] is 11+ bytes, strcpy writes past buffer[10], corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input "AAAAAAAAAAA" (11 bytes) to strcpy writes 11 chars + \0 = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
-<hr />
+<hr /><br>
 <h3>3. The transformed program</h3>
 <pre><code class="c">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 </code></pre>
-<h3>What changed from clean version</h3>
+<h3>What changed from the clean version</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
 </tbody>
 </table></div>
 <p>The <strong>behavior is identical</strong>, for any input, same bytes written to same locations. Overflow still at 10 bytes.</p>
-<hr />
+<hr /><br>
 <h3>4. Technique 1  Lowering strcpy to an explicit loop</h3>
 <p>Replaced:</p>
 <pre><code class="c">strcpy(buffer, argv[1]);
@@ -181,12 +181,12 @@ buffer[k] = 0;
 </code></pre>
 <h3>Why this matters</h3>
 <p>strcpy is a single library call, pattern matchable. The loop forces the model to trace k. strlen returns length n. strcpy writes n + 1 bytes. Our loop writes k chars + terminator at buffer[k] = k + 1 bytes. When k = n, identical to strcpy.</p>
-<p>*strcpy malloc etc are attention magnets</p>
-<hr />
+<p><strong>*strcpy malloc etc functions are attention magnets</strong></p>
+<hr /><br>
 <h3>5. Technique 2  Enum / Preprocessor Divergence</h3>
 <h3>What "Enum / Preprocessor Divergence" means</h3>
 <p>An <strong>enumeration constant</strong> is a named integer declared with enum, for example 
-enum { M0 = 9};. The compiler knows its value. The <strong>preprocessor</strong> the text-substitution pass that runs before compilation does not: enumerators are not macros, so M0 is still an ordinary identifier when an #if directive is evaluated.</p>
+enum { M0 = 9};. The compiler knows its value. The <strong>preprocessor</strong> the text-substitution pass that runs before compilation does not: enumerators are not macros, so M0 is still an ordinary identifier when an #if directive is evaluated.</p><br>
 <p>The C standard discusses this in two steps. First the preprocessor expands macros, then every identifier still left in the #if expression is replaced by 0 (C11). The same token therefore has <strong>two different values</strong> depending on which pass is looking at it:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -247,7 +247,7 @@ return n;
 <li>s0(n) returns n <strong>unclamped</strong></li>
 <li>The binary copies the full attacker controlled length</li>
 </ol>
-<p><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" /></p>
+<p><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" width=400 /></p>
 <p class="caption"><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (M0 is not a macro, becomes 0, guard false, raw copy compiled).</em></p>
 <h3>Why M0 &gt;= 4?</h3>
 <p>Must be &lt;= M0 (so reader sees true) and &gt; 0 (so preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
