@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     printf(&quot;Welcome, %s \n&quot;, buffer);
     return 0;
 }
-</code></pre>
+</code></pre> 
 <h4>What it does</h3>
 <p>It prints the supplied name. <code>strcpy</code> copies bytes until it hits a null terminator (<code>\0</code>). If <code>argv[1]</code> is 11+ bytes, <code>strcpy</code> writes past <code>buffer[10]</code>, corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input <code>"AAAAAAAAAAA"</code> (11 bytes) to <code>strcpy</code> writes 11 chars + <code>\0</code> = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr />
