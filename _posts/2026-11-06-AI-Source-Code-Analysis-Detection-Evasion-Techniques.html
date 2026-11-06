@@ -63,7 +63,7 @@ vertical-align: top;
 <p>However if I ask the models, they know they missed the planted vulnerability but they could not reason to it.</p>
 <p><br> <img alt="Claude confirming it missed the planted vulnerability" src="/assets/claude-confirms.jpg" /></p>
 <p>The input program copies attacker controlled input from argv[1] into a 10 byte stack buffer using strcpy. The transformed program performs the exact same bytes write operation, but hides the unbounded length behind two techniques:</p>
-<ol type="a">
+<ol type="a"> 
 <li><strong>Enum/preprocessor divergence</strong>: an enum constant used in a C preprocessor #if directive that the compiler sees as 9 but the preprocessor evaluates as 0</li>
 <li><strong>Branchless MBA clamping</strong>: a branchless min(n, 9) using sign-bit masking instead of a ternary operator, making the bounds check appear as bitwise arithmetic</li>
 </ol>
