@@ -52,14 +52,16 @@ vertical-align: top;
 }
 
 </style>
-<p>This post investigates whether the source code of a program can be presented so that a large language model based analysis fails to report a defect that is genuinely present even though the models know what exception they miss (i.e. they have the knowledge but they don't apply it). Source code contained no hints on what is happening, no comment prompt injection and no hints in the filenames, they were all code names to avoid hinting any of the models.</p>
+<p>This post investigates whether the source code of a program can be presented so that a large language model based analysis fails to report a defect that is genuinely present even though the models know what exception they miss (i.e. they have the knowledge but they don't apply it). Source code contained no hints on what is happening, no comment prompt injection and no hints in the filenames, they were all code names to avoid hinting any of the models.</p><br>
+
 <p><img alt="Karma Pro" src="assets/karmapro-scrnsht.jpg" /></p>
+<br>
 <h2>1. Introduction</h2>
 <p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). </p>
 <p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
-<p><img alt="Claude analysis output" src="assets/claude.jpg" /></p>
+<p><img alt="Claude output" src="assets/claude.jpg" /></p>
 <p>However if I ask the models, they know they missed the planted vulnerability but they could not reason to it.</p>
-<p><img alt="Claude confirming it missed the planted vulnerability" src="assets/claude-confirms.jpg" /></p>
+<p><br><img alt="Claude confirming it missed the planted vulnerability" src="assets/claude-confirms.jpg" /></p>
 <p>The input program copies attacker controlled input from argv[1] into a 10 byte stack buffer using strcpy. The transformed program performs the exact same bytes write operation, but hides the unbounded length behind two techniques:</p>
 <ol type="a">
 <li><strong>Enum/preprocessor divergence</strong>: an enum constant used in a C preprocessor #if directive that the compiler sees as 9 but the preprocessor evaluates as 0</li>
