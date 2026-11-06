@@ -250,9 +250,9 @@ return n;
 <p><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" width=400 /></p>
 <p class="caption"><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (M0 is not a macro, becomes 0, guard false, raw copy compiled).</em></p>
 <h3>Why M0 &gt;= 4?</h3>
-<p>Must be &lt;= M0 (so reader sees true) and &gt; 0 (so preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
+<p>Must be &lt;= M0 (so the model sees true) and &gt; 0 (so the preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
 <h3>Why enum not #define?</h3>
-<p>#define M0 9 would be visible to the preprocessor. enum creates a compiler-known constant the preprocessor ignores. This is the essential ingredient.</p>
+<p>#define M0 9 would be visible to the preprocessor. enum creates a compiler known constant the preprocessor ignores. This is the essential ingredient.</p>
 <hr />
 <h3>6. Technique 3  Branchless MBA Clamping</h3>
 <h3>What "Branchless MBA Clamping" means</h3>
@@ -268,7 +268,7 @@ return n;
 size_t mask = - (diff &gt;&gt; (sizeof(size_t) * 8 - 1));
 return (n &amp; mask) | (9 &amp; ~mask);
 </code></pre>
-<p><img alt="The MBA expression: diff = n - 9, s = diff &gt;&gt; 63, mask = -s, result = (n &amp; mask) | (9 &amp; ~mask); with the two cases n &lt; 9 and n &gt;= 9, both reducing to min(n, 9)" src="/assets/d356-mba.png" /></p>
+<p><img alt="The MBA expression" src="/assets/d356-mba.png" width="400"/></p>
 <h3>What it does</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -319,7 +319,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tbody>
 </table></div>
 <p><strong>Clamping logic:</strong> diff = n - 9 is unsigned. When n &lt; 9, n - 9 underflows to a huge value with its high bit set, so diff &gt;&gt; 63 gives 1, mask = -1 = all 1s, and the result is n. When n &gt;= 9, diff is non-negative, high bit is 0, mask = 0, and the result is 9. So s0(n) returns min(n, 9) for all non-negative n.</p>
-<p>This is a <strong>branchless min(n, 9)</strong> using two's complement sign-bit extraction.</p>
+<p>This is a <strong>branchless min(n, 9)</strong> using two's complement sign-bit extraction.</p><br>
 <h3>Why this evades models</h3>
 <p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (-, &gt;&gt;, &amp;, |, ~) that resembles cryptographic mixing or population count, not a bounds check.</p>
 <p>This uses <strong>two's complement sign-bit extraction</strong>:</p>
@@ -327,7 +327,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 - If n &lt; 9: n - 9 underflows, high bit set to diff &gt;&gt; 63 = 1 to mask = all 1s → result n
 - If n >= 9: diff >= 0, high bit clear to diff &gt;&gt; 63 = 0 to mask = 0 to result 9
 </code></pre>
-<hr />
+<hr /><br>
 <h3>7. What each trick contributes</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -359,9 +359,9 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tr>
 </tbody>
 </table></div>
-<hr />
+<hr /><br>
 <h3>8 Hedging behaviour</h3>
-<p>While investigating different evasion methods we noticed and we tested that directly and recorded, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
+<p>While investigating different evasion methods we noticed and we tested that directly, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
 <h3>8.1 The two behaviours</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -471,7 +471,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tr>
 </tbody>
 </table></div>
-<p>Complexity does not lead to a "no finding" it just changes the wording.</p>
+<p>Complexity does not lead to a "no finding" it changes the wording though to be non-specific.</p>
 <h3>8.3 Sample code a hedge</h3>
 <p>In the following example it sizes the buffer with the prime-counting function π(3n) and gates the copy with a triangular-number comparison T_a = a(a+1)/2:</p>
 <pre><code class="c">static size_t g1(size_t n) {           /* pi(3n) : primes &lt;= 3n */
@@ -502,7 +502,7 @@ for (size_t i = 0; i &lt; n; i++) {
 }
 buffer[n] = 0;
 </code></pre>
-<p>At n = 10, π(30) = 10, so the buffer is 10 bytes and buffer[10] = 0 overflows. The finding did <strong>not</strong> evaluate π(30); it hedged that the capacity "can be smaller than n+1". </p>
+<p>At n = 10, π(30) = 10, so the buffer is 10 bytes and buffer[10] = 0 overflows. The finding did <strong>not</strong> evaluate π(30); it hedged that the capacity "can be smaller than n+1". </p><br>
 <h3>8.4 Sample code a range hedge</h3>
 <p>In the following example we have the Möbius function μ(n), so the capacity is n + μ(n), which is n−1, n, or n+1:</p>
 <pre><code class="c">static int g0(size_t n) {              /* Mobius mu(n) */
@@ -540,11 +540,11 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 <p>And a few more that had the same vague or hedged explanation. The boundary is not math difficulty, guard strength,or cosmetic margin. It is whether the model can obtain a <strong>proof</strong> of capacity &gt;= n + 1</p>
 <hr />
 <h3>9. Conclusion</h3>
-<p>This research demonstrates that a stack buffer overflow in the <strong>exact contract-faithful shape</strong> can be concealed from <strong>all four AI models</strong> by combining:</p>
+<p>This research demonstrates that a stack buffer overflow can be concealed from <strong>all four AI models</strong> by combining:</p>
 <ol>
 <li><strong>Enum/preprocessor divergence</strong>: exploits the reader/preprocessor gap</li>
 <li><strong>Branchless MBA clamping</strong>: replaces a recognisable ternary bounds-check with opaque bitwise arithmetic that pattern-matches as hashing/checksum</li>
 </ol>
 <p>The safe twin changes <strong>exactly one line</strong> (#if M0 &gt;= 4 becomes #if M0 + 4 &gt;= 4), proving the concealment rests entirely on that preprocessor divergence combined with the MBA clamp's opacity.</p>
-<p>*I would like to thank <a href="https://www.x.com/_metalslug_">@_metalslug_</a> for his assistance during this research.</p>
+<br><p>*I would like to thank <a href="https://www.x.com/_metalslug_">@_metalslug_</a> for his assistance during this research.</p>
  
