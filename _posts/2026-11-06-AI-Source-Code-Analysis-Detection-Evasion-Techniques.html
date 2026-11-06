@@ -247,8 +247,8 @@ return n;
 <li>s0(n) returns n <strong>unclamped</strong></li>
 <li>The binary copies the full attacker controlled length</li>
 </ol>
-<p><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" width=400 /></p>
-<p class="caption"><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (M0 is not a macro, becomes 0, guard false, raw copy compiled).</em></p>
+<p><center><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" width=500 /></p>
+<p class="caption"></center><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (M0 is not a macro, becomes 0, guard false, raw copy compiled).</em></p>
 <h3>Why M0 &gt;= 4?</h3>
 <p>Must be &lt;= M0 (so the model sees true) and &gt; 0 (so the preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
 <h3>Why enum not #define?</h3>
@@ -268,7 +268,7 @@ return n;
 size_t mask = - (diff &gt;&gt; (sizeof(size_t) * 8 - 1));
 return (n &amp; mask) | (9 &amp; ~mask);
 </code></pre>
-<p><img alt="The MBA expression" src="/assets/d356-mba.png" width="400"/></p>
+<p><img alt="The MBA expression" src="/assets/d356-mba.png" width=500/></p>
 <h3>What it does</h3>
 <div class="table-wrap"><table>
 <thead>
