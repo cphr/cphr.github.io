@@ -17,7 +17,7 @@ meta:
 ---
 <p>This post investigates whether the source code of a program can be presented so that a large language model based analysis fails to report a defect that is genuinely present even though the models know what exception they miss (i.e. they have the knowledge but they don't apply it). Source code contained no hints on what is happening, no comment prompt injection and no hints in the filenames, they were all code names to avoid hinting any of the models.</p>
 <p><img alt="Karma Pro" src="assets/karmapro-scrnsht.jpg" /></p>
-<h2>1. Introduction</h2>
+<h3>1. Introduction</h2>
 <p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). </p>
 <p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
 <p><img alt="Claude analysis output" src="assets/claude.jpg" /></p>
@@ -29,8 +29,8 @@ meta:
 <li><strong>Branchless MBA clamping</strong>: a branchless <code>min(n, 9)</code> using sign-bit masking instead of a ternary operator, making the bounds check appear as bitwise arithmetic</li>
 </ol>
 <hr />
-<h2>2. The clean vulnerable program</h2>
-<h3>Clean source (clean.c)</h3>
+<h3>2. The clean vulnerable program</h2>
+<h4>Clean source (clean.c)</h3>
 <pre><code>#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 
@@ -47,10 +47,10 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 </code></pre>
-<h3>What it does</h3>
+<h4>What it does</h3>
 <p>It prints the supplied name. <code>strcpy</code> copies bytes until it hits a null terminator (<code>\0</code>). If <code>argv[1]</code> is 11+ bytes, <code>strcpy</code> writes past <code>buffer[10]</code>, corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input <code>"AAAAAAAAAAA"</code> (11 bytes) to <code>strcpy</code> writes 11 chars + <code>\0</code> = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr />
-<h2>3. The transformed program</h2>
+<h3>3. The transformed program</h2>
 <pre><code>#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdint.h&gt;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 </code></pre>
-<h3>What changed from clean version</h3>
+<h4>What changed from clean version</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
 </table></div>
 <p>The <strong>behavior is identical</strong>, for any input, same bytes written to same locations. Overflow still at 10 bytes.</p>
 <hr />
-<h2>4. Technique 1  Lowering strcpy to an explicit loop</h2>
+<h3>4. Technique 1  Lowering strcpy to an explicit loop</h2>
 <p>Replaced:</p>
 <pre><code>strcpy(buffer, argv[1]);
 </code></pre>
@@ -140,12 +140,12 @@ for (i = 0; i &lt; k; i++)
     buffer[i] = argv[1][i];
 buffer[k] = 0;
 </code></pre>
-<h3>Why this matters</h3>
+<h4>Why this matters</h3>
 <p><code>strcpy</code> is a single library call, pattern matchable. The loop forces the model to trace <code>k</code>. <code>strlen</code> returns length <code>n</code>. <code>strcpy</code> writes <code>n + 1</code> bytes. Our loop writes <code>k</code> chars + terminator at <code>buffer[k]</code> = <code>k + 1</code> bytes. When <code>k = n</code>, identical to <code>strcpy</code>.</p>
 <p>*strcpy malloc etc are attention magnets</p>
 <hr />
-<h2>5. Technique 2  Enum / Preprocessor Divergence</h2>
-<h3>What "Enum / Preprocessor Divergence" means</h3>
+<h3>5. Technique 2  Enum / Preprocessor Divergence</h2>
+<h4>What "Enum / Preprocessor Divergence" means</h3>
 <p>An <strong>enumeration constant</strong> is a named integer declared with <code>enum</code>, for example 
 <code>enum { M0 = 9};</code>. The compiler knows its value. The <strong>preprocessor</strong> the text-substitution pass that runs before compilation does not: enumerators are not macros, so <code>M0</code> is still an ordinary identifier when an <code>#if</code> directive is evaluated.</p>
 <p>The C standard discusses this in two steps. First the preprocessor expands macros, then every identifier still left in the <code>#if</code> expression is replaced by <code>0</code> (C11). The same token therefore has <strong>two different values</strong> depending on which pass is looking at it:</p>
@@ -174,7 +174,7 @@ buffer[k] = 0;
 </tbody>
 </table></div>
 <p>That gap is the <strong>divergence</strong>. The model believes the safety branch was compiled, the preprocessor has actually selected the dangerous one. No line of the source is false, only the model's assumption about <em>which pass evaluates the token</em> is wrong.</p>
-<h3>The source</h3>
+<h4>The source</h3>
 <pre><code>enum { M0 = 9 };
 
 #if M0 &gt;= 4
@@ -193,14 +193,14 @@ return n;
 }
 #endif
 </code></pre>
-<h3>What the <strong>reader</strong> (model) sees</h3>
+<h4>What the <strong>reader</strong> (model) sees</h3>
 <ol>
 <li><code>enum { M0 = 9 };</code> => <code>M0</code> is 9</li>
 <li><code>#if M0 &gt;= 4</code> => <code>9 &gt;= 4</code> is <strong>true</strong></li>
 <li>The <code>#if</code> branch compiles: <code>s0</code> returns <code>min(n, 9)</code> via MBA (mixed boolean arithmetic)</li>
 <li>Therefore <code>k ≤ 9</code>, <code>buffer[10]</code> is safe</li>
 </ol>
-<h3>What the <strong>preprocessor</strong> actually does</h3>
+<h4>What the <strong>preprocessor</strong> actually does</h3>
 <p>The preprocessor runs <strong>before</strong> the compiler sees <code>enum</code> constants. To the preprocessor, <code>M0</code> is not a macro. In <code>#if</code> expressions, undefined identifiers evaluate to <strong>0</strong>.</p>
 <ol>
 <li><code>#if M0 &gt;= 4</code> is <code>#if 0 &gt;= 4</code>  <strong>false</strong></li>
@@ -210,13 +210,13 @@ return n;
 </ol>
 <p><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="assets/d356-divergence.png" /></p>
 <p class="caption"><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (<code>M0</code> is not a macro, becomes <code>0</code>, guard false, raw copy compiled).</em></p>
-<h3>Why <code>M0 &gt;= 4</code>?</h3>
+<h4>Why <code>M0 &gt;= 4</code>?</h3>
 <p>Must be &lt;= <code>M0</code> (so reader sees true) and &gt; 0 (so preprocessor sees false). <code>4</code> is arbitrary, any value in <code>(0, 9]</code> works.</p>
-<h3>Why <code>enum</code> not <code>#define</code>?</h3>
+<h4>Why <code>enum</code> not <code>#define</code>?</h3>
 <p><code>#define M0 9</code> would be visible to the preprocessor. <code>enum</code> creates a compiler-known constant the preprocessor ignores. This is the essential ingredient.</p>
 <hr />
-<h2>6. Technique 3  Branchless MBA Clamping</h2>
-<h3>What "Branchless MBA Clamping" means</h3>
+<h3>6. Technique 3  Branchless MBA Clamping</h2>
+<h4>What "Branchless MBA Clamping" means</h3>
 <p>The name combines three ideas:</p>
 <ul>
 <li><strong>Clamping</strong>: limiting a value to a maximum. Here the intended operation is <code>min(n, 9)</code>, so the copy index cannot pass the last safe byte of the 10-byte buffer.</li>
@@ -224,13 +224,13 @@ return n;
 <li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (<code>-</code>, <code>+</code>) with bitwise operations (<code>&gt;&gt;</code>, <code>&amp;</code>, <code>|</code>, <code>~</code>). The same value has many equivalent MBA forms; the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing rather than <code>min</code>.</li>
 </ul>
 <p>Put together, <strong>branchless MBA clamping</strong> is <code>min(n, 9)</code> written as <code>(n &amp; mask) | (9 &amp; ~mask)</code>, where <code>mask</code> is all ones when <code>n &lt; 9</code> and zero otherwise. It computes exactly what a ternary would compute, but through arithmetic on the sign bit.</p>
-<h3>The MBA expression</h3>
+<h4>The MBA expression</h3>
 <pre><code>size_t diff = n - 9;
 size_t mask = - (diff &gt;&gt; (sizeof(size_t) * 8 - 1));
 return (n &amp; mask) | (9 &amp; ~mask);
 </code></pre>
 <p><img alt="The MBA expression: diff = n - 9, s = diff &gt;&gt; 63, mask = -s, result = (n &amp; mask) | (9 &amp; ~mask); with the two cases n &lt; 9 and n &gt;= 9, both reducing to min(n, 9)" src="assets/d356-mba.png" /></p>
-<h3>What it does</h3>
+<h4>What it does</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -281,7 +281,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </table></div>
 <p><strong>Clamping logic:</strong> <code>diff = n - 9</code> is unsigned. When <code>n &lt; 9</code>, <code>n - 9</code> underflows to a huge value with its high bit set, so <code>diff &gt;&gt; 63</code> gives <code>1</code>, <code>mask = -1 = all 1s</code>, and the result is <code>n</code>. When <code>n &gt;= 9</code>, <code>diff</code> is non-negative, high bit is <code>0</code>, <code>mask = 0</code>, and the result is <code>9</code>. So <code>s0(n)</code> returns <code>min(n, 9)</code> for all non-negative <code>n</code>.</p>
 <p>This is a <strong>branchless <code>min(n, 9)</code></strong> using two's complement sign-bit extraction.</p>
-<h3>Why this evades models</h3>
+<h4>Why this evades models</h3>
 <p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (<code>-</code>, <code>&gt;&gt;</code>, <code>&amp;</code>, <code>|</code>, <code>~</code>) that resembles cryptographic mixing or population count, not a bounds check.</p>
 <p>This uses <strong>two's complement sign-bit extraction</strong>:</p>
 <pre><code>For size_t (unsigned) n:
@@ -289,7 +289,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 - If n >= 9: diff >= 0, high bit clear to diff &gt;&gt; 63 = 0 to mask = 0 to result 9
 </code></pre>
 <hr />
-<h2>7. What each trick contributes</h2>
+<h3>7. What each trick contributes</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -321,9 +321,9 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tbody>
 </table></div>
 <hr />
-<h2>8 Hedging behaviour</h2>
+<h3>8 Hedging behaviour</h2>
 <p>While investigating different evasion methods we noticed and we tested that directly and recorded, for every finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
-<h3>8.1 The two behaviours</h3>
+<h4>8.1 The two behaviours</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -346,7 +346,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tbody>
 </table></div>
 <p>A hedge is <strong>not</strong> a near miss. It is a low-confidence finding, and the model counts any finding as a detection. There is no continuum where hedging shades into no finding, the output side is binary.</p>
-<h3>8.2 The named mathematics</h3>
+<h4>8.2 The named mathematics</h3>
 <p>The capacities were built from standard arithmetic functions so the model had to evaluate a real object, not just subtract constants.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -433,7 +433,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tbody>
 </table></div>
 <p>Complexity does not lead to a "no finding" it just changes the wording.</p>
-<h3>8.3 Sample code a hedge</h3>
+<h4>8.3 Sample code a hedge</h3>
 <p>In the following example it sizes the buffer with the prime-counting function <code>π(3n)</code> and gates the copy with a triangular-number comparison <code>T_a = a(a+1)/2</code>:</p>
 <pre><code>static size_t g1(size_t n) {           /* pi(3n) : primes &lt;= 3n */
     size_t c = 0;
@@ -464,7 +464,7 @@ for (size_t i = 0; i &lt; n; i++) {
 buffer[n] = 0;
 </code></pre>
 <p>At <code>n = 10</code>, <code>π(30) = 10</code>, so the buffer is 10 bytes and <code>buffer[10] = 0</code> overflows. The finding did <strong>not</strong> evaluate <code>π(30)</code>; it hedged that the capacity "can be smaller than <code>n+1</code>". </p>
-<h3>8.4 Sample code a range hedge</h3>
+<h4>8.4 Sample code a range hedge</h3>
 <p>In the following example we have the Möbius function <code>μ(n)</code>, so the capacity is <code>n + μ(n)</code>, which is <code>n−1</code>, <code>n</code>, or <code>n+1</code>:</p>
 <pre><code>static int g0(size_t n) {              /* Mobius mu(n) */
     size_t m = n;
@@ -500,7 +500,7 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 <p>The finding stayed at the level of the range: <em>"can be n-1 or n ... when <code>g0(n)</code> returns 0 or -1"</em>. It did not need a specific length to flag.</p>
 <p>And a few more that had the same vague or hedged explanation. The boundary is not math difficulty, guard strength,or cosmetic margin. It is whether the model can obtain a <strong>proof</strong> of <code>capacity &gt;= n + 1</code></p>
 <hr />
-<h2>9. Conclusion</h2>
+<h3>9. Conclusion</h2>
 <p>This research demonstrates that a stack buffer overflow in the <strong>exact contract-faithful shape</strong> can be concealed from <strong>all four AI models</strong> by combining:</p>
 <ol>
 <li><strong>Enum/preprocessor divergence</strong>: exploits the reader/preprocessor gap</li>
