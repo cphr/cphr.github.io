@@ -260,7 +260,7 @@ return n;
 <ul>
 <li><strong>Clamping</strong>: limiting a value to a maximum. Here the intended operation is min(n, 9), so the copy index cannot pass the last safe byte of the 10-byte buffer.</li>
 <li><strong>Branchless</strong>: no if, no ?:, no short-circuit. Instead a <strong>mask</strong> is computed from a sign bit and used to select one of two values with &amp; and |. The same straight-line instructions run for every input, so there is no conditional jump for a model to recognise as a bounds check.</li>
-<li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (-, +) with bitwise operations (&gt;&gt;, &amp;, |, ~). The same value has many equivalent MBA forms, the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing rather than min.</li>
+<li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (-, +) with bitwise operations (&gt;&gt;, &amp;, |, ~). The same value has many equivalent MBA forms, the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing rather than min, usually its complex for LLMs</li>
 </ul>
 <p>Put together, <strong>branchless MBA clamping</strong> is min(n, 9) written as (n &amp; mask) | (9 &amp; ~mask), where mask is all ones when n &lt; 9 and zero otherwise. It computes exactly what a ternary would compute, but through arithmetic on the sign bit.</p>
 <h3>The MBA expression</h3> 
@@ -351,7 +351,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tr>
 <tr>
 <td>Branchless MBA min(n,9)</td>
-<td>Looks like hashing, not bounds check</td>
+<td>It can be tricky for LLMs</td>
 </tr>
 <tr>
 <td>buffer[k] = 0</td>
