@@ -545,6 +545,5 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 <li><strong>Enum/preprocessor divergence</strong>: exploits the reader/preprocessor gap</li>
 <li><strong>Branchless MBA clamping</strong>: replaces a recognisable ternary bounds-check with opaque bitwise arithmetic that pattern-matches as hashing/checksum</li>
 </ol>
-<p>The safe twin changes <strong>exactly one line</strong> (#if M0 &gt;= 4 becomes #if M0 + 4 &gt;= 4), proving the concealment rests entirely on that preprocessor divergence combined with the MBA clamp's opacity.</p>
 <br><p>*I would like to thank <a href="https://www.x.com/_metalslug_">@_metalslug_</a> for his assistance during this research.</p>
  
