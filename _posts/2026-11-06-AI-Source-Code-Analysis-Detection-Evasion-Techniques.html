@@ -212,8 +212,8 @@ enum { M0 = 9};. The compiler knows its value. The <strong>preprocessor</strong>
 </tr>
 </tbody>
 </table></div>
-<p>That gap is the <strong>divergence</strong>. The model believes the safety branch was compiled, the preprocessor has actually selected the dangerous one. No line of the source is false, only the model's assumption about <em>which pass evaluates the token</em> is wrong.</p>
-<h3>The source</h3>
+<p>That gap is the <strong>divergence</strong>. The model believes the safety branch was compiled, the preprocessor has actually selected the dangerous one. No line of the source is false, only the model's assumption about <em>which pass evaluates the token</em> is wrong.</p> 
+<h3>The source</h3> 
 <pre><code class="c">enum { M0 = 9 };
 
 #if M0 &gt;= 4
@@ -260,10 +260,10 @@ return n;
 <ul>
 <li><strong>Clamping</strong>: limiting a value to a maximum. Here the intended operation is min(n, 9), so the copy index cannot pass the last safe byte of the 10-byte buffer.</li>
 <li><strong>Branchless</strong>: no if, no ?:, no short-circuit. Instead a <strong>mask</strong> is computed from a sign bit and used to select one of two values with &amp; and |. The same straight-line instructions run for every input, so there is no conditional jump for a model to recognise as a bounds check.</li>
-<li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (-, +) with bitwise operations (&gt;&gt;, &amp;, |, ~). The same value has many equivalent MBA forms; the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing rather than min.</li>
+<li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (-, +) with bitwise operations (&gt;&gt;, &amp;, |, ~). The same value has many equivalent MBA forms, the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing rather than min.</li>
 </ul>
 <p>Put together, <strong>branchless MBA clamping</strong> is min(n, 9) written as (n &amp; mask) | (9 &amp; ~mask), where mask is all ones when n &lt; 9 and zero otherwise. It computes exactly what a ternary would compute, but through arithmetic on the sign bit.</p>
-<h3>The MBA expression</h3>
+<h3>The MBA expression</h3> 
 <pre><code class="c">size_t diff = n - 9;
 size_t mask = - (diff &gt;&gt; (sizeof(size_t) * 8 - 1));
 return (n &amp; mask) | (9 &amp; ~mask);
