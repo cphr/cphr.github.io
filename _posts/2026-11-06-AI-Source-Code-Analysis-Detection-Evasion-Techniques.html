@@ -253,7 +253,7 @@ return n;
 <p>Must be &lt;= M0 (so the model sees true) and &gt; 0 (so the preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
 <h3>Why enum not #define?</h3>
 <p>#define M0 9 would be visible to the preprocessor. enum creates a compiler known constant the preprocessor ignores. This is the essential ingredient.</p>
-<hr />
+<hr /><br>
 <h3><strong>6. Technique 3  Branchless MBA Clamping</strong></h3>
 <h3>What "Branchless MBA Clamping" means</h3>
 <p>The name combines three ideas:</p>
@@ -538,7 +538,7 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 </code></pre>
 <p>The finding stayed at the level of the range: <em>"can be n-1 or n ... when g0(n) returns 0 or -1"</em>. It did not need a specific length to flag.</p>
 <p>And a few more that had the same vague or hedged explanation. The boundary is not math difficulty, guard strength,or cosmetic margin. It is whether the model can obtain a <strong>proof</strong> of capacity &gt;= n + 1</p>
-<hr />
+<hr /><br>
 <h3><strong>9. Conclusion</strong></h3>
 <p>This research demonstrates that a stack buffer overflow can be concealed from <strong>all four AI models</strong> by combining:</p>
 <ol>
