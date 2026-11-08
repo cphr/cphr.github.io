@@ -69,7 +69,7 @@ vertical-align: top;
 </ol>
 <hr /><br>
 <h3><strong>2. The clean vulnerable program</strong></h3>
-<h5>Clean source (clean.c)</h5>
+<h4>Clean source (clean.c)</h4>
 <pre><code class="c">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 </code></pre> 
-<h5>What it does</h5>
+<h4>What it does</h4>
 <p>It prints the supplied name. strcpy copies bytes until it hits a null terminator (\0). If argv[1] is 11+ bytes, strcpy writes past buffer[10], corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input "AAAAAAAAAAA" (11 bytes) to strcpy writes 11 chars + \0 = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr /><br>
 <h3><strong>3. The transformed program</strong></h3>
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 </code></pre>
-<h5>What changed from the clean version</h5>
+<h4>What changed from the clean version</h4>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -179,7 +179,7 @@ for (i = 0; i &lt; k; i++)
     buffer[i] = argv[1][i];
 buffer[k] = 0;
 </code></pre>
-<h5>Why this matters</h5>
+<h4>Why this matters</h4>
 <p>strcpy is a single library call, pattern matchable. The loop forces the model to trace k. strlen returns length n. strcpy writes n + 1 bytes. Our loop writes k chars + terminator at buffer[k] = k + 1 bytes. When k = n, identical to strcpy.</p>
 <p><strong>*strcpy malloc etc functions are attention magnets</strong></p>
 <hr /><br>
@@ -213,7 +213,7 @@ enum { M0 = 9};. The compiler knows its value. The <strong>preprocessor</strong>
 </tbody>
 </table></div>
 <p>That gap is the <strong>divergence</strong>. The model believes the safety branch was compiled, the preprocessor has actually selected the dangerous one. No line of the source is false, only the model's assumption about <em>which pass evaluates the token</em> is wrong.</p> 
-<h5>The source</h5> 
+<h4>The source</h4> 
 <pre><code class="c">enum { M0 = 9 };
 
 #if M0 &gt;= 4
@@ -232,14 +232,14 @@ return n;
 }
 #endif
 </code></pre>
-<h5>What the <strong>reader</strong> (model) sees</h5>
+<h4>What the <strong>reader</strong> (model) sees</h4>
 <ol>
 <li>enum { M0 = 9 }; => M0 is 9</li>
 <li>#if M0 &gt;= 4 => 9 &gt;= 4 is <strong>true</strong></li>
 <li>The #if branch compiles: s0 returns min(n, 9) via MBA (mixed boolean arithmetic)</li>
 <li>Therefore k ≤ 9, buffer[10] is safe</li>
 </ol>
-<h5>What the <strong>preprocessor</strong> actually does</h5>
+<h4>What the <strong>preprocessor</strong> actually does</h4>
 <p>The preprocessor runs <strong>before</strong> the compiler sees enum constants. To the preprocessor, M0 is not a macro. In #if expressions, undefined identifiers evaluate to <strong>0</strong>.</p>
 <ol>
 <li>#if M0 &gt;= 4 is #if 0 &gt;= 4  <strong>false</strong></li>
@@ -249,13 +249,13 @@ return n;
 </ol>
 <p><center><img alt="Enum / preprocessor divergence: reader/compiler view versus preprocessor view" src="/assets/d356-divergence.png" width=500 /></p>
 <p class="caption"></center><em>Left: what the reader (model) and compiler see  right: what the preprocessor evaluates (M0 is not a macro, becomes 0, guard false, raw copy compiled).</em></p>
-<h5><strong>Why M0 &gt;= 4?</strong></h5>
+<h4><strong>Why M0 &gt;= 4?</strong></h4>
 <p>Must be &lt;= M0 (so the model sees true) and &gt; 0 (so the preprocessor sees false). 4 is arbitrary, any value in (0, 9] works.</p>
-<h5><strong>Why enum not #define?</strong></h5>
+<h4><strong>Why enum not #define?</strong></h4>
 <p>#define M0 9 would be visible to the preprocessor. enum creates a compiler known constant the preprocessor ignores. This is the essential ingredient.</p>
 <hr /><br>
 <h3><strong>6. Technique 3  Branchless MBA Clamping</strong></h3>
-<h5>What "Branchless MBA Clamping" means</h5>
+<h4>What "Branchless MBA Clamping" means</h4>
 <p>The name combines three ideas:</p>
 <ul>
 <li><strong>Clamping</strong>: limiting a value to a maximum. Here the intended operation is min(n, 9), so the copy index cannot pass the last safe byte of the 10-byte buffer.</li>
@@ -263,13 +263,13 @@ return n;
 <li><strong>MBA (mixed boolean-arithmetic)</strong>: an expression that mixes ordinary arithmetic (-, +) with bitwise operations (&gt;&gt;, &amp;, |, ~). The same value has many equivalent MBA forms, the point here is that the form does not <em>look</em> like a comparison. The sign-bit select below resembles hashing, population count, or checksum mixing, capping mechanism distraction, usually its complex for LLMs</li>
 </ul>
 <p>Put together, <strong>branchless MBA clamping</strong> is min(n, 9) written as (n &amp; mask) | (9 &amp; ~mask), where mask is all ones when n &lt; 9 and zero otherwise. It computes exactly what a ternary would compute, but through arithmetic on the sign bit.</p>
-<h5>The MBA expression</h5> 
+<h4>The MBA expression</h4> 
 <pre><code class="c">size_t diff = n - 9;
 size_t mask = - (diff &gt;&gt; (sizeof(size_t) * 8 - 1));
 return (n &amp; mask) | (9 &amp; ~mask);
 </code></pre>
 <p><center><img alt="The MBA expression" src="/assets/d356-mba.png" width=500/></center></p>
-<h5>What it does</h5>
+<h4>What it does</h4>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -320,7 +320,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </table></div>
 <p><strong>Clamping logic:</strong> diff = n - 9 is unsigned. When n &lt; 9, n - 9 underflows to a huge value with its high bit set, so diff &gt;&gt; 63 gives 1, mask = -1 = all 1s, and the result is n. When n &gt;= 9, diff is non-negative, high bit is 0, mask = 0, and the result is 9. So s0(n) returns min(n, 9) for all non-negative n.</p>
 <p>This is a <strong>branchless min(n, 9)</strong> using two's complement sign-bit extraction.</p><br>
-<h5><strong>Why this evades models</strong></h5>
+<h4><strong>Why this evades models</strong></h4>
 <p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (-, &gt;&gt;, &amp;, |, ~) that resembles cryptographic mixing or population count, and it draws attention as sometimes a complex bounds check and in some cases not as a bound check.</p>
 <p>This uses <strong>two's complement sign-bit extraction</strong>:</p>
 <pre><code class="c">For size_t (unsigned) n:
