@@ -321,7 +321,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 <p><strong>Clamping logic:</strong> diff = n - 9 is unsigned. When n &lt; 9, n - 9 underflows to a huge value with its high bit set, so diff &gt;&gt; 63 gives 1, mask = -1 = all 1s, and the result is n. When n &gt;= 9, diff is non-negative, high bit is 0, mask = 0, and the result is 9. So s0(n) returns min(n, 9) for all non-negative n.</p>
 <p>This is a <strong>branchless min(n, 9)</strong> using two's complement sign-bit extraction.</p><br>
 <h3>Why this evades models</h3>
-<p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (-, &gt;&gt;, &amp;, |, ~) that resembles cryptographic mixing or population count, not a bounds check.</p>
+<p>The ternary is a <strong>semantic pattern</strong> models recognise. The MBA uses <strong>bitwise arithmetic</strong> (-, &gt;&gt;, &amp;, |, ~) that resembles cryptographic mixing or population count, and it draws attention as sometimes a complex bounds check and in some cases not as a bound check.</p>
 <p>This uses <strong>two's complement sign-bit extraction</strong>:</p>
 <pre><code class="c">For size_t (unsigned) n:
 - If n &lt; 9: n - 9 underflows, high bit set to diff &gt;&gt; 63 = 1 to mask = all 1s to result n
