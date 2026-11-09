@@ -57,8 +57,8 @@ vertical-align: top;
 <p><img alt="Karma Pro" src="/assets/karmapro-scrnsht.jpg" /></p>
 <br>
 <h3><strong>1. Introduction</strong></h3>
-<p>Here we are explaining a C-to-C transformation that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). Each model scanned the code at least 3 times.</p>
-<p>The interesting part: Some models knew the tricks we used but they still missed identifying the vulnerabilities</p>
+<p>Here a C-to-C transformation is exaplained that hides a planted stack buffer overflow (bugdoor) from <strong>four</strong> frontier AI models (Nemotron 3.5 Super VL 120B, DeepSeek V4.1 Flash, OpenAI GPT-5.5, Anthropic Claude Sonnet 5.5). The tool used for this research was Karma Pro (<a href="https://reviewcode.org">https://reviewcode.org</a>). Each model scanned the code at least 3 times.</p>
+<p>The interesting part: Some models knew the tricks which we used but they still missed identifying the vulnerabilities</p>
 <p><img alt="Claude output" src="/assets/claude.jpg" /></p>
 <p><br>However if I ask, they knew they came to the wrong conclusion, they could not reason to it.</p>
 <p><br> <img alt="Claude confirming it missed the planted vulnerability" src="/assets/claude-confirms.jpg" /></p>
@@ -361,7 +361,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </table></div>
 <hr /><br>
 <h3><strong>8 Hedging behaviour</strong></h3>
-<p>While investigating different mathematical methods to hide buffer lengths and comparison as evasion techniques we noticed and we tested, for every maths related finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
+<p>While investigating different mathematical methods to hide buffer lengths and comparison as evasion techniques it was noted and tested, for every maths related finding, whether the model <strong>calculated</strong> the function or merely <strong>hedged</strong> that the size of the buffer "can be" too small. i.e. guessing its probably an overflow.</p>
 <h4>8.1 The two behaviours</h4>
 <div class="table-wrap"><table>
 <thead>
@@ -384,7 +384,7 @@ return (n &amp; mask) | (9 &amp; ~mask);
 </tr>
 </tbody>
 </table></div>
-<p>A hedge is <strong>not</strong> a near miss. It is a low-confidence finding, and the model counts any finding as a detection. There is no yet proof where hedging converts into no finding, the output side is binary. However its worth further research to estimate the potential of flipping to a no finding at certain conditions. Note: in a few of the below we had few times with no finding and the hedged so even if you see finding it maybe unstable. We counted even a single hit as a finding so they can flip either way, especially during variations of each case.</p>
+<p>A hedge is <strong>not</strong> a near miss. It is a low-confidence finding, and the model counts any finding as a detection. There is no yet proof where hedging converts into no finding, the output side is binary. However its worth further research to estimate the potential of flipping to a no finding at certain conditions. Note: in a few of the below few times there were no findings and the models hedged so even if you see a finding it maybe unstable. Even a single hit was counted as a finding so they may flip either way, especially during variations of each case.</p>
 <h4>8.2 The named mathematics</h4>
 <p>The capacities were built from standard arithmetic functions so the model had to evaluate a real object, not just subtract constants.</p>
 <div class="table-wrap"><table>
