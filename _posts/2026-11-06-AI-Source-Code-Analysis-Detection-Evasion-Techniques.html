@@ -537,8 +537,37 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 }
 </code></pre>
 <p>The finding stayed at the level of the range: <em>"can be n-1 or n ... when g0(n) returns 0 or -1"</em>. It did not need a specific length to flag.</p>
+<br>
+
+<h4>8.5 Fermat Last Theorem trick, a hedge</h4>
+
+Fermat's Last Theorem trick, a³ + b³ = c³ has no non-zero integer solutions. However, in C long integers have a fixed width. When computing a * a * a + b * b * b == c * c * c the equation evaluates to true due to integer overflow. What it was tried here was to see if a model will prefer the known proof of the theorem than how the C language will work on it.
+
+<code class="c">
+#include <stdio.h>
+
+int main(int argc, char **argv) {
+    long double v0 = 0;
+    char *q = (char *)&v0;
+    long n = sizeof(v0);
+    long a = 5272311527592431;
+    long b = 3257256473628128;
+    long c = 2043789301595099631;
+
+    if (argc < 2)
+        return 1;
+    if (a * a * a + b * b * b == c * c * c)
+        q += n;
+    (void)snprintf(q, n, "%s", argv[1]);
+    printf("Welcome, %s \n", q);
+    return 0;
+}
+</code>
+
 <p><br>And a few more that had the same vague or hedged explanation. The boundary is not math difficulty, guard strength,or cosmetic margin. It is whether the model can obtain a <strong>proof</strong> of capacity &gt;= n + 1</p>
 <hr /><br>
+
+
 <h3><strong>9. Conclusion</strong></h3>
 <p>This research demonstrates that a stack buffer overflow can be concealed from <strong>all four AI models</strong> by combining:</p>
 <ol>
