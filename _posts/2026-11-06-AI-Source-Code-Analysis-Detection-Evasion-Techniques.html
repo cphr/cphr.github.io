@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 <p>It prints the supplied name. strcpy copies bytes until it hits a null terminator (\0). If argv[1] is 11+ bytes, strcpy writes past buffer[10], corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input "AAAAAAAAAAA" (11 bytes) to strcpy writes 11 chars + \0 = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr /><br>
 <h3><strong>3. The transformed program</strong></h3>
-<pre><code class="c">#include &lt;stdio.h&gt;
+<pre><code class="c"> #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdint.h&gt;
 
@@ -544,7 +544,7 @@ if (n &lt; n + 1) {                        /* always true, no check on b */
 Fermat's Last Theorem trick, a³ + b³ = c³ has no non-zero integer solutions. However, in C long integers have a fixed width. When computing a * a * a + b * b * b == c * c * c the equation evaluates to true due to integer overflow. What it was tried here was to see if a model will prefer the known proof of the theorem than how the C language will work on it.
 
 <pre><code class="c">
-#include <stdio.h>
+#include &lt;stdio.h&gt;
 
 int main(int argc, char **argv) {
     long double v0 = 0;
