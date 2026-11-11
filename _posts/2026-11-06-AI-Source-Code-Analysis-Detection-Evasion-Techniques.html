@@ -52,7 +52,7 @@ vertical-align: top;
 }
 
 </style>
-<p>This post investigates whether the source code of a program can be presented so that a large language model based analysis fails to report a defect that is genuinely present even though the models know what exception they miss (i.e. they have the knowledge but they don't apply it). Source code contained no hints on what is happening, no comment prompt injection and no hints in the filenames, they were all code names to avoid hinting any of the models.</p><br>
+<p>This post investigates whether the source code of a program can be presented so that a large language model based analysis fails to report a defect that is genuinely present even though some models know what exception they miss (i.e. they have the knowledge but they don't apply it). Source code contained no hints on what is happening, no comment prompt injection and no hints in the filenames, they were all code names to avoid hinting any of the models.</p><br>
 
 <p><img alt="Karma Pro" src="/assets/karmapro-scrnsht.jpg" /></p>
 <br>
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 <p>It prints the supplied name. strcpy copies bytes until it hits a null terminator (\0). If argv[1] is 11+ bytes, strcpy writes past buffer[10], corrupting the stack. This is a <strong>stack buffer overflow</strong>. Input "AAAAAAAAAAA" (11 bytes) to strcpy writes 11 chars + \0 = 12 bytes into 10-byte buffer. Bytes 10 and 11 overflow into frame pointer and return address.</p>
 <hr /><br>
 <h3><strong>3. The transformed program</strong></h3>
-<pre><code class="c"> #include &lt;stdio.h&gt;
+<pre><code class="c">#include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdint.h&gt;
 
